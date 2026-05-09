@@ -1,0 +1,32 @@
+// Colors
+$bg-color: #0a0a0a;
+$bg-dark: #050505;
+$surface: rgba(20, 20, 20, 0.7);
+$text-primary: #ffffff;
+$text-secondary: #d1d1d1; // Brightened from #a0a0a0
+$accent-blue: #007bff;
+$accent-cyan: #00f2ff;
+$accent-purple: #7000ff;
+
+// Gradients
+$grad-blue-cyan: linear-gradient(135deg, $accent-blue, $accent-cyan);
+$grad-dark-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+
+// Shadows & Glows
+$glow-blue: 0 0 20px rgba($accent-blue, 0.3);
+$glow-cyan: 0 0 20px rgba($accent-cyan, 0.3);
+
+// Glassmorphism
+@mixin glass {
+  background: rgba(255, 255, 255, 0.05); // Brighter than the previous dark surface
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.15); // More prominent border
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+// Typography
+$font-main: 'Inter', system-ui, -apple-system, sans-serif;
+
+// Transitions
+$transition-smooth: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);

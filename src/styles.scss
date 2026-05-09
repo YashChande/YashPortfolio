@@ -1,0 +1,106 @@
+@use './styles/variables' as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  background-color: transparent; // Changed from $bg-color to reveal layers
+  color: $text-primary;
+  font-family: $font-main;
+  font-size: 18px; // Increased from 16px
+  line-height: 1.6;
+  overflow-x: hidden;
+  scroll-behavior: auto; // Let Lenis handle it
+}
+
+body {
+  min-height: 100vh;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: $transition-smooth;
+}
+
+ul {
+  list-style: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.text-gradient {
+  background: $grad-blue-cyan;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.glass-card {
+  @include glass;
+  padding: 2.5rem;
+  transition: $transition-smooth;
+  
+  &:hover {
+    border-color: rgba($accent-cyan, 0.4);
+    box-shadow: 0 0 30px rgba($accent-cyan, 0.15);
+    transform: translateY(-5px);
+  }
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 3rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  
+  &::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: $accent-cyan;
+    margin-top: 1rem;
+  }
+}
+
+// Lenis smooth scroll class
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
