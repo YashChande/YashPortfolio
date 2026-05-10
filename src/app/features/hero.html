@@ -1,0 +1,35 @@
+<section class="hero-section">
+  <div class="container hero-grid">
+    <div class="hero-text" #heroContent>
+      <h1 class="hero-title">
+        <span class="text-gradient">Yash Chande</span>
+      </h1>
+      <h2 class="hero-tagline">
+        Software Engineer • Cybersecurity • Data Systems
+      </h2>
+      <p class="hero-subtitle">
+        2+ years corporate experience in building scalable enterprise applications, cybersecurity compliance systems,
+        and intelligent analytics platforms.
+      </p>
+
+      <div class="cta-buttons">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-outline">Get in Touch</a>
+      </div>
+    </div>
+
+    <div class="profile-container">
+      <div class="profile-glow"></div>
+      <div class="profile-frame" #profilePic>
+        <img src="assets/profile.png" alt="Yash Chande" class="profile-img">
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator" (click)="scrollToAbout()">
+    <div class="mouse">
+      <div class="wheel"></div>
+    </div>
+    <span>Scroll</span>
+  </div>
+</section>
