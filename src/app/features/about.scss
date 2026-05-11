@@ -1,0 +1,115 @@
+@use '../../styles/variables' as *;
+
+.about-section {
+  padding: 8rem 0;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 350px; // Slightly narrower language column
+  gap: 4rem; // Reduced from 6rem
+  align-items: start;
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sub-title {
+  font-size: 1.5rem;
+  color: $text-primary;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
+}
+
+.education-list {
+  margin-top: 3.5rem; // Reduced from 5rem
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; // Reduced from 2.5rem
+}
+
+.edu-item {
+  padding: 2rem;
+  position: relative;
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  .edu-period {
+    color: $accent-cyan;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  .edu-degree {
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+    color: $text-primary;
+  }
+  
+  .edu-school {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .edu-details {
+    font-size: 0.9rem;
+    color: $text-secondary;
+    line-height: 1.6;
+  }
+}
+
+.about-languages {
+  padding: 4rem;
+  height: fit-content;
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  
+  .lang-item {
+    margin-bottom: 2rem;
+    
+    &:last-child { margin-bottom: 0; }
+  }
+  
+  .lang-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+  
+  .lang-level {
+    color: $accent-cyan;
+    font-size: 0.9rem;
+  }
+  
+  .lang-bar {
+    background: $accent-blue;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .lang-desc {
+    display: block;
+    font-size: 0.8rem;
+    color: $text-secondary;
+  }
+}

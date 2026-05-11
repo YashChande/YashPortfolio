@@ -1,0 +1,55 @@
+<section class="about-section" id="about">
+  <div class="container">
+    <h2 class="section-title">Background</h2>
+    
+    <div class="about-grid">
+      <div class="about-content">
+        <p class="lead">
+          Highly motivated problem solver, passionate about exploring new technologies and applying them to address real-world challenges.
+        </p>
+        <p>
+          With a strong foundation in Information Technology and ongoing Master's studies in Web and Data Science in Germany, I bridge the gap between complex data systems and scalable software solutions.
+        </p>
+        
+        <div class="education-list">
+          <h3 class="sub-title">Academic Foundation</h3>
+          <div class="edu-item glass-card" *ngFor="let edu of education">
+            <span class="edu-period">{{ edu.period }}</span>
+            <h4 class="edu-degree">{{ edu.degree }}</h4>
+            <p class="edu-school">{{ edu.school }}</p>
+            <p class="edu-details">{{ edu.details }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-languages glass-card">
+        <h3 class="sub-title">Language Proficiency</h3>
+        <div class="lang-item">
+          <span class="lang-name">Marathi</span>
+          <span class="lang-level">Native</span>
+        </div>
+        <div class="lang-item">
+          <span class="lang-name">English</span>
+          <div class="lang-bars">
+            <span class="lang-bar active">C1</span>
+            <span class="lang-desc">Listening, Reading, Writing, Speaking</span>
+          </div>
+        </div>
+        <div class="lang-item">
+          <span class="lang-name">Hindi</span>
+          <div class="lang-bars">
+            <span class="lang-bar active">C1</span>
+            <span class="lang-desc">Listening, Reading, Writing, Speaking</span>
+          </div>
+        </div>
+        <div class="lang-item">
+          <span class="lang-name">German</span>
+          <div class="lang-bars">
+            <span class="lang-bar active">A2</span>
+            <span class="lang-desc">Ongoing Studies</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
