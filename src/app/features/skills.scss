@@ -1,0 +1,71 @@
+@use '../../styles/variables' as *;
+
+.skills-section {
+  padding: 8rem 0;
+  background: linear-gradient(180deg, transparent, rgba($accent-blue, 0.05), transparent);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.skill-category {
+  padding: 2.5rem;
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  
+  .category-name {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+    color: $text-primary;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
+  }
+}
+
+.skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateX(10px);
+    
+    .skill-dot {
+      background: $accent-cyan;
+      box-shadow: $glow-cyan;
+      transform: scale(1.5);
+    }
+    
+    .skill-name {
+      color: $text-primary;
+    }
+  }
+}
+
+.skill-dot {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.skill-name {
+  font-size: 1.2rem;
+  color: $text-primary; // Changed from $text-secondary for better visibility
+  font-weight: 500;
+  transition: color 0.3s ease;
+}

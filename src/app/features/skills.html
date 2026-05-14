@@ -1,0 +1,17 @@
+<section class="skills-section" id="skills">
+  <div class="container">
+    <h2 class="section-title">Technical Expertise</h2>
+    
+    <div class="skills-grid">
+      <div class="skill-category glass-card" *ngFor="let group of skillGroups">
+        <h3 class="category-name">{{ group.name }}</h3>
+        <div class="skills-list">
+          <div class="skill-item" *ngFor="let skill of group.skills">
+            <span class="skill-dot"></span>
+            <span class="skill-name">{{ skill }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
