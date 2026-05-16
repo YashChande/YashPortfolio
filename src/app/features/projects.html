@@ -1,0 +1,43 @@
+<section class="projects-section" id="projects">
+  <div class="container">
+    <h2 class="section-title">Projects</h2>
+
+    <div class="projects-grid">
+      <div class="project-card glass-card" *ngFor="let project of projects">
+        <div class="project-image-container">
+          <img [src]="project.image" [alt]="project.title" class="project-image">
+          <div class="project-overlay">
+            <a [href]="project.link" target="_blank" class="view-project">View Project</a>
+          </div>
+        </div>
+
+        <div class="project-info">
+          <span class="project-category">{{ project.category }}</span>
+          <h3 class="project-title">{{ project.title }}</h3>
+          <p class="project-description">{{ project.description }}</p>
+
+          <div class="project-tags">
+            <span class="tag" *ngFor="let tag of project.tags">{{ tag }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="certifications-section">
+      <h2 class="section-title">Honours & Certifications</h2>
+      <div class="certs-grid">
+        <div class="cert-card glass-card" *ngFor="let cert of certifications">
+          <div class="cert-icon">
+            <img *ngIf="cert.isSIH" src="assets/sih_logo.png" alt="SIH Logo" class="sih-icon">
+            <span *ngIf="!cert.isSIH">{{ cert.icon }}</span>
+          </div>
+          <div class="cert-info">
+            <h4>{{ cert.title }}</h4>
+            <p>{{ cert.issuer }} • {{ cert.date }}</p>
+            <a [href]="cert.link" target="_blank" class="cert-link">View Certificate</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
