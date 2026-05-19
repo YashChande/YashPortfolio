@@ -1,0 +1,113 @@
+@use '../../styles/variables' as *;
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem 0;
+  z-index: 1000;
+  transition: $transition-smooth;
+  
+  &.scrolled {
+    padding: 1rem 0;
+    background: rgba($bg-color, 0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: $text-primary;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    .logo-icon { color: $accent-cyan; filter: drop-shadow(0 0 8px $accent-cyan); }
+  }
+
+  .logo-text {
+    background: linear-gradient(135deg, $text-primary 0%, rgba(255, 255, 255, 0.6) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logo-icon {
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .logo-dot {
+    width: 6px;
+    height: 6px;
+    background: $accent-cyan;
+    border-radius: 50%;
+    box-shadow: $glow-cyan;
+  }
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  
+  @media (max-width: 768px) {
+    display: none; // TODO: Mobile Menu
+  }
+  
+  a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: $text-secondary;
+    cursor: pointer;
+    position: relative;
+    padding: 0.5rem 0;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: $accent-cyan;
+      transition: width 0.3s ease;
+    }
+    
+    &:hover {
+      color: white;
+      &::after {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.btn-nav {
+  padding: 0.6rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: $transition-smooth;
+  
+  &:hover {
+    background: white;
+    color: $bg-color;
+  }
+}

@@ -1,0 +1,198 @@
+@use '../../styles/variables' as *;
+
+.contact-section {
+  padding: 8rem 0;
+}
+
+.contact-header {
+  text-align: center;
+  margin-bottom: 5rem;
+  
+  .section-title {
+    margin-bottom: 1.5rem;
+  }
+  
+  .section-subtitle {
+    color: $text-secondary;
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 4rem;
+  align-items: start;
+  
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+// Info Side
+.info-card {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+
+  .card-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: $text-primary;
+  }
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  .icon {
+    font-family: 'FontAwesome';
+    font-size: 1.2rem;
+    color: $accent-cyan;
+    width: 40px;
+    height: 40px;
+    background: rgba($accent-cyan, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .details {
+    display: flex;
+    flex-direction: column;
+    
+    .label {
+      font-size: 0.8rem;
+      color: $text-secondary;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.3rem;
+    }
+
+    a {
+      color: $text-primary;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      
+      &:hover { color: $accent-cyan; }
+    }
+  }
+}
+
+.social-links {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+
+  .social-icon {
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+
+    svg {
+      width: 22px;
+      height: 22px;
+      transition: all 0.3s ease;
+    }
+
+    &:hover {
+      background: $accent-cyan;
+      border-color: $accent-cyan;
+      transform: translateY(-3px);
+      svg { fill: $bg-dark; }
+    }
+  }
+}
+
+// Form Side
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form-group {
+    input, textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1.2rem 1.5rem;
+      border-radius: 8px;
+      color: white;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      
+      &:focus {
+        outline: none;
+        border-color: $accent-cyan;
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 0 15px rgba($accent-cyan, 0.1);
+      }
+    }
+  }
+
+  .status-message {
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-align: center;
+    
+    &.success {
+      background: rgba($accent-cyan, 0.1);
+      color: $accent-cyan;
+      border: 1px solid rgba($accent-cyan, 0.3);
+    }
+    
+    &.error {
+      background: rgba(255, 100, 100, 0.1);
+      color: #ff6464;
+      border: 1px solid rgba(255, 100, 100, 0.3);
+    }
+  }
+
+  .submit-btn {
+    padding: 1.2rem;
+    background: $accent-cyan;
+    color: $bg-dark;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: $glow-cyan;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
