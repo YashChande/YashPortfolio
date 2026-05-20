@@ -5,15 +5,17 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  padding: 2rem 0;
+  padding: 1.5rem 0;
   z-index: 1000;
   transition: $transition-smooth;
+  background: rgba($bg-color, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   
   &.scrolled {
     padding: 1rem 0;
-    background: rgba($bg-color, 0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba($bg-color, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }
 }
 
