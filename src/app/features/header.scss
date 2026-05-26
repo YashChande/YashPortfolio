@@ -5,11 +5,11 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  padding: 1.5rem 0;
+  padding: 2.5rem 0;
   z-index: 1000;
   transition: $transition-smooth;
-  background: rgba($bg-color, 0.8);
-  backdrop-filter: blur(20px);
+  background: rgba($bg-color, 0.5);
+  backdrop-filter: blur(30px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   
   &.scrolled {
