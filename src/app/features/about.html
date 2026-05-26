@@ -11,15 +11,25 @@
           With a strong foundation in Information Technology and ongoing Master's studies in Web and Data Science in Germany, I bridge the gap between complex data systems and scalable software solutions.
         </p>
         
-        <div class="education-list">
-          <h3 class="sub-title">Academic Foundation</h3>
-          <div class="edu-item glass-card" *ngFor="let edu of education">
-            <span class="edu-period">{{ edu.period }}</span>
-            <h4 class="edu-degree">{{ edu.degree }}</h4>
-            <p class="edu-school">{{ edu.school }}</p>
-            <p class="edu-details">{{ edu.details }}</p>
+        <div class="education-timeline">
+            <h3 class="sub-title">Academic Foundation</h3>
+            <div class="timeline">
+              <div class="timeline-line"></div>
+              <div class="timeline-item" *ngFor="let edu of education">
+                <div class="timeline-dot"></div>
+                <div class="edu-card glass-card">
+                  <div class="edu-header">
+                    <div>
+                      <h4 class="edu-degree">{{ edu.degree }}</h4>
+                      <p class="edu-school">{{ edu.school }}</p>
+                    </div>
+                    <span class="edu-period">{{ edu.period }}</span>
+                  </div>
+                  <p class="edu-details">{{ edu.details }}</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
       </div>
 
       <div class="about-languages glass-card">
