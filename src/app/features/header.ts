@@ -11,6 +11,7 @@ import { AnimationService } from '../core/services/animation.service';
 })
 export class HeaderComponent {
   isScrolled = false;
+  resumeUrl = 'https://drive.google.com/file/d/1_wasStB1wXOLlWwNHfGllSykHV72IbkW/view?usp=sharing';
   navItems = [
     { label: 'About', id: '#about' },
     { label: 'Skills', id: '#skills' },
