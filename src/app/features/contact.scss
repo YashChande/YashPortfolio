@@ -5,7 +5,7 @@
 }
 
 .contact-header {
-  text-align: center;
+  text-align: left;
   margin-bottom: 5rem;
   
   .section-title {
@@ -15,7 +15,7 @@
   .section-subtitle {
     color: $text-secondary;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 0;
     font-size: 1.1rem;
     line-height: 1.6;
   }

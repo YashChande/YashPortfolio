@@ -19,9 +19,9 @@ export class ExperienceComponent implements AfterViewInit {
       highlights: ['Angular & TypeScript', '.NET & C#', 'SQL-based Databases', 'Email Automation', 'Security Compliance']
     },
     {
-      title: 'Information Technology Engineer',
+      title: 'Information Technology Student',
       company: 'Academic Projects & Training',
-      period: '2019 - 2023',
+      period: 'August 2019 - May 2023',
       description: 'Developed various engineering projects including a Skin Cancer Detection system and a Covid-19 Tracker. Focused on web technologies and data analytics.',
       highlights: ['Python & Django', 'Full-stack Development', 'System Design']
     }

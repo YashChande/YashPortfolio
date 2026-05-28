@@ -8,13 +8,14 @@ header {
   padding: 1.8rem 0;
   z-index: 1000;
   transition: $transition-smooth;
-  background: rgba($bg-color, 0.5);
-  backdrop-filter: blur(30px);
+  background: rgba($bg-color, 0.3);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   
   &.scrolled {
     padding: 0.75rem 0;
-    background: rgba($bg-color, 0.9);
+    background: rgba($bg-color, 0.6);
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }
 }
