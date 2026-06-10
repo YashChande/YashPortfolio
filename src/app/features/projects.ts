@@ -36,12 +36,12 @@ export class ProjectsComponent implements AfterViewInit {
       link: '#'
     },
     {
-      title: 'Multilingual Translation Platform',
+      title: 'Translation Ally',
       category: 'Hackathon Project',
       image: 'assets/compliance_tool.png',
       description: 'Grand Finale Finalist project for Smart India Hackathon 2022. Document and speech-to-speech translation.',
       tags: ['Django', 'Python', 'SIH 2022'],
-      link: 'https://drive.google.com/drive/u/7/folders/1zsJqANFmr34p94TaiP9J4FA_NlOdmFUK'
+      link: 'https://translation-ally-6wbv.onrender.com/'
     }
   ];
 
