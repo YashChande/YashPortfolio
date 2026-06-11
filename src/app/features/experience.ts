@@ -16,14 +16,16 @@ export class ExperienceComponent implements AfterViewInit {
       company: 'Arcon Techsolutions',
       period: 'June 2023 - July 2025',
       description: 'Developed and enhanced enterprise security product features, including an email automation module with configurable reporting and scheduling. Focused on client-driven enhancements, data encryption, and critical bug resolution.',
-      highlights: ['Angular & TypeScript', '.NET & C#', 'SQL-based Databases', 'Email Automation', 'Security Compliance']
+      highlights: ['Angular & TypeScript', '.NET & C#', 'SQL-based Databases', 'Email Automation', 'Security Compliance'],
+      logo: 'assets/arcon_risk_control_logo.jpg'
     },
     {
-      title: 'Information Technology Student',
-      company: 'Academic Projects & Training',
-      period: 'August 2019 - May 2023',
-      description: 'Developed various engineering projects including a Skin Cancer Detection system and a Covid-19 Tracker. Focused on web technologies and data analytics.',
-      highlights: ['Python & Django', 'Full-stack Development', 'System Design']
+      title: 'Web Development Intern',
+      company: 'Lets Grow More',
+      period: 'Sep 2022 - Oct 2022',
+      description: 'Built a website to create a To-Do list, student enrollment form and a calculator.',
+      highlights: ['HTML', 'CSS', 'Javascript', 'React'],
+      logo: 'assets/letsgrowmore_logo.jpg'
     }
   ];
 

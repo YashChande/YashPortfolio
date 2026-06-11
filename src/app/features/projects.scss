@@ -81,13 +81,25 @@
 .project-info {
   padding: 2.5rem;
 
+  .project-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
   .project-category {
     color: $accent-cyan;
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-bottom: 0.5rem;
     display: block;
+  }
+
+  .project-date {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
   }
 
   .project-title {
@@ -172,4 +184,12 @@
       color: white;
     }
   }
+}
+.cert-icon-placeholder {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }

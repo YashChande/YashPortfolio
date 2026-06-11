@@ -17,6 +17,7 @@ export class HeaderComponent {
     { label: 'Skills', id: '#skills' },
     { label: 'Experience', id: '#experience' },
     { label: 'Projects', id: '#projects' },
+    { label: 'Honours', id: '#certifications' },
     { label: 'Contact', id: '#contact' }
   ];
 

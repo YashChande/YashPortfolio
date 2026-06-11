@@ -4,13 +4,7 @@
     
     <div class="about-grid">
       <div class="about-content">
-        <p class="lead">
-          Highly motivated problem solver, passionate about exploring new technologies and applying them to address real-world challenges.
-        </p>
-        <p>
-          With a strong foundation in Information Technology and ongoing Master's studies in Web and Data Science in Germany, I bridge the gap between complex data systems and scalable software solutions.
-        </p>
-        
+
         <div class="education-timeline" style="margin-top: 2rem;">
             <div class="timeline">
               <div class="timeline-line"></div>
@@ -18,11 +12,14 @@
                 <div class="timeline-dot"></div>
                 <div class="edu-card glass-card">
                   <div class="edu-header">
-                    <div>
-                      <h4 class="edu-degree">{{ edu.degree }}</h4>
-                      <p class="edu-school">{{ edu.school }}</p>
+                    <div class="edu-brand">
+                      <img *ngIf="edu.logo" [src]="edu.logo" [alt]="edu.school + ' Logo'" class="edu-logo">
+                      <div>
+                        <h4 class="edu-degree">{{ edu.degree }}</h4>
+                        <p class="edu-school">{{ edu.school }}</p>
+                      </div>
                     </div>
-                    <span class="edu-period">{{ edu.period }}</span>
+                    <span class="edu-period" *ngIf="edu.period">{{ edu.period }}</span>
                   </div>
                   <p class="edu-details">{{ edu.details }}</p>
                 </div>

@@ -15,13 +15,22 @@ export class AboutComponent implements AfterViewInit {
       degree: 'Master of Science - Web and Data Science',
       school: 'University of Koblenz, Germany',
       period: 'April 2026 - March 2028',
-      details: 'Specializing in web technologies and data science at EQF level 7.'
+      details: 'Specializing in web technologies and data science at EQF level 7.',
+      logo: 'assets/uni_koblenz.jpg'
     },
     {
       degree: 'Bachelor of Engineering - Information Technology',
       school: 'University of Mumbai, India',
       period: 'August 2019 - May 2023',
-      details: 'Core training in programming, data structures, databases, and system design. EQF level 6.'
+      details: 'Core training in programming, data structures, databases, and system design. EQF level 6.',
+      logo: 'assets/uni_mumbai.jpg'
+    },
+    {
+      degree: 'High School',
+      school: 'Rustomjee International School, Mumbai',
+      period: '',
+      details: 'Primary ,Secondary and higher secondary schooling.',
+      logo: 'assets/rustomjee_international_school_logo.jpg'
     }
   ];
 

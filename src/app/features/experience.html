@@ -9,9 +9,12 @@
         <div class="timeline-dot"></div>
         <div class="experience-card glass-card">
           <div class="exp-header">
-            <div>
-              <h3 class="exp-title">{{ exp.title }}</h3>
-              <h4 class="exp-company">{{ exp.company }}</h4>
+            <div class="exp-brand">
+              <img *ngIf="exp.logo" [src]="exp.logo" [alt]="exp.company + ' Logo'" class="exp-logo">
+              <div>
+                <h3 class="exp-title">{{ exp.title }}</h3>
+                <h4 class="exp-company">{{ exp.company }}</h4>
+              </div>
             </div>
             <span class="exp-period">{{ exp.period }}</span>
           </div>

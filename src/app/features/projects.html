@@ -6,13 +6,16 @@
       <div class="project-card glass-card" *ngFor="let project of projects">
         <div class="project-image-container">
           <img [src]="project.image" [alt]="project.title" class="project-image">
-          <div class="project-overlay">
-            <a [href]="project.link" target="_blank" class="view-project">View Project</a>
+          <div class="project-overlay" *ngIf="project.buttonLabel">
+            <a [href]="project.link" target="_blank" class="view-project">{{ project.buttonLabel }}</a>
           </div>
         </div>
 
         <div class="project-info">
-          <span class="project-category">{{ project.category }}</span>
+          <div class="project-meta">
+            <span class="project-category">{{ project.category }}</span>
+            <span class="project-date" *ngIf="project.date">{{ project.date }}</span>
+          </div>
           <h3 class="project-title">{{ project.title }}</h3>
           <p class="project-description">{{ project.description }}</p>
 
@@ -23,13 +26,13 @@
       </div>
     </div>
 
-    <div class="certifications-section">
-      <h2 class="section-title">Honours & Certifications</h2>
+    <div class="certifications-section" id="certifications">
+      <h2 class="section-title">Honours &amp; Certifications</h2>
       <div class="certs-grid">
         <div class="cert-card glass-card" *ngFor="let cert of certifications">
           <div class="cert-icon">
-            <img *ngIf="cert.isSIH" src="assets/sih_logo.png" alt="SIH Logo" class="sih-icon">
-            <span *ngIf="!cert.isSIH">{{ cert.icon }}</span>
+            <img *ngIf="cert.logo" [src]="cert.logo" [alt]="cert.issuer + ' Logo'" class="sih-icon">
+            <span *ngIf="!cert.logo" class="cert-icon-placeholder">🎓</span>
           </div>
           <div class="cert-info">
             <h4>{{ cert.title }}</h4>
