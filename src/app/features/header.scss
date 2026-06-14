@@ -29,26 +29,26 @@ header {
   transition: $transition-smooth;
   
   // Soft depth shadow
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.3);
   
   &::before {
     content: '';
     position: absolute;
-    inset: 0;
-    border-radius: 16px;
+    // Expanded slightly so the blurred transition blends perfectly
+    inset: -6px;
+    border-radius: 22px;
     z-index: -1;
     
     // Inner liquid glass background
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(45px) saturate(230%);
-    -webkit-backdrop-filter: blur(45px) saturate(230%);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(35px) saturate(220%);
+    -webkit-backdrop-filter: blur(35px) saturate(220%);
     
-    // Feather effect: soft gradient mask that blends edges seamlessly
-    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
-    mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    // Smooth feather effect using CSS blur filter on the entire glass layer
+    filter: blur(10px);
     
     // Soft internal reflection without a solid line
-    box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.03);
   }
 }
 
