@@ -123,8 +123,8 @@
     align-items: center;
     gap: 1.2rem;
     .edu-logo {
-      width: 50px;
-      height: 50px;
+      width: 65px;
+      height: 65px;
       border-radius: 8px;
       object-fit: contain;
       background: white;
@@ -137,6 +137,9 @@
     font-size: 1.5rem;
     color: $text-primary;
     margin-bottom: 0.3rem;
+    &.small-degree {
+      font-size: 1.425rem; // 5% smaller
+    }
   }
   .edu-school {
     font-size: 1.1rem;
@@ -288,8 +291,8 @@
      align-items: center;
      gap: 1.2rem;
      .edu-logo {
-       width: 50px;
-       height: 50px;
+       width: 65px;
+       height: 65px;
        border-radius: 8px;
        object-fit: contain;
        background: white;

@@ -15,7 +15,7 @@
                     <div class="edu-brand">
                       <img *ngIf="edu.logo" [src]="edu.logo" [alt]="edu.school + ' Logo'" class="edu-logo">
                       <div>
-                        <h4 class="edu-degree">{{ edu.degree }}</h4>
+                        <h4 class="edu-degree" [class.small-degree]="edu.degree.includes('Bachelor')">{{ edu.degree }}</h4>
                         <p class="edu-school">{{ edu.school }}</p>
                       </div>
                     </div>

@@ -31,4 +31,8 @@ export class HeaderComponent {
   scrollTo(id: string) {
     this.animService.scrollTo(id);
   }
+
+  showNewFeature() {
+    alert('Work in Progress... Will be available in the next release');
+  }
 }
