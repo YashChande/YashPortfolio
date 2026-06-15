@@ -12,8 +12,16 @@ import { AnimationService } from '../core/services/animation.service';
 export class ExperienceComponent implements AfterViewInit {
   experiences = [
     {
+      title: 'Founder',
+      company: 'Docuvia',
+      period: 'July 2025 - Present',
+      description: 'Docuvia is an AI-powered document intelligence, risk analytics, and decision support platform that transforms unstructured documents into actionable insights, visual analytics, and measurable improvement over time.',
+      highlights: ['Angular', 'Llama 3', 'C#', 'TypeScript', 'SQLite', 'HTML5', 'CSS', 'PrimeNG'],
+      logo: 'assets/docuvia.jpg'
+    },
+    {
       title: 'Software Developer',
-      company: 'Arcon Techsolutions',
+      company: 'ARCON',
       period: 'June 2023 - July 2025',
       description: 'Developed and enhanced enterprise security product features, including an email automation module with configurable reporting and scheduling. Focused on client-driven enhancements, data encryption, and critical bug resolution.',
       highlights: ['Angular & TypeScript', '.NET & C#', 'SQL-based Databases', 'Email Automation', 'Security Compliance'],
