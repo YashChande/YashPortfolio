@@ -33,6 +33,23 @@ export class ThreeService {
     window.addEventListener('mousemove', (e) => this.onMouseMove(e));
   }
 
+  private createYCTexture(): THREE.Texture {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.clearRect(0, 0, 64, 64);
+      ctx.font = 'bold 32px sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('YC', 32, 32);
+    }
+    const texture = new THREE.CanvasTexture(canvas);
+    return texture;
+  }
+
   private createParticles() {
     const particlesGeometry = new THREE.BufferGeometry();
     const count = 1500;
@@ -48,12 +65,14 @@ export class ThreeService {
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.02,
+      size: 0.12,
       sizeAttenuation: true,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.4,
       vertexColors: true,
-      blending: THREE.AdditiveBlending
+      blending: THREE.AdditiveBlending,
+      map: this.createYCTexture(),
+      depthWrite: false
     });
 
     this.particles = new THREE.Points(particlesGeometry, particlesMaterial);

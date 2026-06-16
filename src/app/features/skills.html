@@ -7,8 +7,10 @@
         <h3 class="category-name">{{ group.name }}</h3>
         <div class="skills-list">
           <div class="skill-item" *ngFor="let skill of group.skills">
-            <span class="skill-dot"></span>
-            <span class="skill-name">{{ skill }}</span>
+            <img [src]="skill.icon" [alt]="skill.name" 
+                 [class.logo-invert]="skill.icon.includes('lucide')" 
+                 class="skill-logo">
+            <span class="skill-name">{{ skill.name }}</span>
           </div>
         </div>
       </div>

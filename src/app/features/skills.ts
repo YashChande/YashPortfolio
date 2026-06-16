@@ -13,19 +13,40 @@ export class SkillsComponent implements AfterViewInit {
   skillGroups = [
     {
       name: 'Frontend',
-      skills: ['Angular', 'TypeScript', 'SCSS', 'HTML5/CSS3', 'Bootstrap']
+      skills: [
+        { name: 'Angular', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg' },
+        { name: 'TypeScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg' },
+        { name: 'SCSS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg' },
+        { name: 'HTML5/CSS3', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg' },
+        { name: 'Bootstrap', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg' }
+      ]
     },
     {
       name: 'Backend',
-      skills: ['.NET', 'C#', 'Python', 'Django', 'REST APIs']
+      skills: [
+        { name: '.NET', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dotnetcore/dotnetcore-original.svg' },
+        { name: 'C#', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg' },
+        { name: 'Python', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
+        { name: 'Django', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg' },
+        { name: 'REST APIs', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/braces.svg' }
+      ]
     },
     {
       name: 'Data & Database',
-      skills: ['SQL Server', 'Data Analytics', 'Query Optimization', 'Data Structures']
+      skills: [
+        { name: 'SQL Server', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoftsqlserver/microsoftsqlserver-original.svg' },
+        { name: 'Data Analytics', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/line-chart.svg' },
+        { name: 'Query Optimization', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/gauge.svg' }
+      ]
     },
     {
       name: 'Specialized',
-      skills: ['Cybersecurity', 'Compliance Systems', 'Email Automation', 'System Design']
+      skills: [
+        { name: 'Cybersecurity', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/shield-check.svg' },
+        { name: 'Compliance Systems', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/clipboard-check.svg' },
+        { name: 'Email Automation', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/mail.svg' },
+        { name: 'System Design', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/workflow.svg' }
+      ]
     }
   ];
 

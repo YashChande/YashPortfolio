@@ -43,10 +43,9 @@
   &:hover {
     transform: translateX(10px);
     
-    .skill-dot {
-      background: $accent-cyan;
-      box-shadow: $glow-cyan;
-      transform: scale(1.5);
+    .skill-logo {
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 6px rgba($accent-cyan, 0.6));
     }
     
     .skill-name {
@@ -55,12 +54,15 @@
   }
 }
 
-.skill-dot {
-  width: 8px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
+.skill-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
   transition: all 0.3s ease;
+  
+  &.logo-invert {
+    filter: invert(1) brightness(1.5);
+  }
 }
 
 .skill-name {
