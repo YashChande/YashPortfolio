@@ -23,8 +23,12 @@ export class ExperienceComponent implements AfterViewInit {
       title: 'Software Developer',
       company: 'ARCON',
       period: 'June 2023 - July 2025',
-      description: 'Developed and enhanced enterprise security product features, including an email automation module with configurable reporting and scheduling. Focused on client-driven enhancements, data encryption, and critical bug resolution.',
-      highlights: ['Angular & TypeScript', '.NET & C#', 'SQL-based Databases', 'Email Automation', 'Security Compliance'],
+      description: `Worked on ARCON's Security Compliance Management (SCM) product:
+• Developed responsive Angular interfaces and backend APIs using .NET technologies.
+• Designed the Email configuration page and worked on Cron-based scheduling formats.
+• Implemented lazy-loaded tree structures and optimized SQL Server operations using LINQ & Dapper.
+• Resolved critical application bugs and collaborated across teams to deliver high-quality solutions.`,
+      highlights: ['Angular & TypeScript', '.NET & C#', 'SQL-based Databases', 'Email Automation', 'Security Compliance', 'LINQ', 'Debugging'],
       logo: 'assets/arcon_risk_control_logo.jpg'
     },
     {

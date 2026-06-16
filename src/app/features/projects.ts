@@ -23,10 +23,10 @@ export class ProjectsComponent implements AfterViewInit {
     },
     {
       title: 'Translation Ally',
-      category: 'Hackathon Project',
+      category: 'National-Level Hackathon Project',
       date: 'Aug 2022',
       image: 'assets/translator1.jpg',
-      description: 'Built a real-time document and speech-to-speech translation and transcription platform supporting multiple Indian regional languages, enabling seamless multilingual communication...',
+      description: 'Built a real-time document and speech-to-speech translation and transcription platform supporting multiple languages',
       tags: ['Django', 'Python', 'NLP', 'SIH 2022'],
       link: 'https://translation-ally-6wbv.onrender.com/',
       buttonLabel: 'Visit Deployed Site'
@@ -37,7 +37,7 @@ export class ProjectsComponent implements AfterViewInit {
       date: 'Jan 2022 – Jun 2022',
       image: 'assets/skin_cancer_detection.png',
       description: 'Developed a website to detect skin cancer to aid doctors and patients for early diagnosis of the disease. Incorporated deep learning concepts like CNN and YOLO for faster and accurate image classification. Used packages like PyTorch and DenseNet for training of the model.',
-      tags: ['PyTorch', 'YOLO', 'CNN', 'DenseNet', 'Medical AI'],
+      tags: ['PyTorch', 'YOLO', 'CNN', 'DenseNet', 'Machine learning'],
       link: null,
       buttonLabel: null
     },
