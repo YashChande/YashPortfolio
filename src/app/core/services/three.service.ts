@@ -65,7 +65,7 @@ export class ThreeService {
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.12,
+      size: 0.16,
       sizeAttenuation: true,
       transparent: true,
       opacity: 0.4,
@@ -82,8 +82,8 @@ export class ThreeService {
   private animate() {
     requestAnimationFrame(() => this.animate());
 
-    this.particles.rotation.y += 0.001;
-    this.particles.rotation.x += 0.0005;
+    this.particles.rotation.y += 0.002;
+    this.particles.rotation.x += 0.001;
 
     this.renderer.render(this.scene, this.camera);
   }
