@@ -13,7 +13,22 @@
               <img *ngIf="exp.logo" [src]="exp.logo" [alt]="exp.company + ' Logo'" class="exp-logo">
               <div>
                 <h3 class="exp-title">{{ exp.title }}</h3>
-                <h4 class="exp-company">{{ exp.company }}</h4>
+                <h4 class="exp-company">
+                  <ng-container *ngIf="exp.website; else noLink">
+                    <a [href]="exp.website" target="_blank" class="company-link">
+                      {{ exp.company }}
+                      <svg class="ext-link-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                      </svg>
+                    </a>
+                  </ng-container>
+                  <ng-template #noLink>
+                    {{ exp.company }}
+                  </ng-template>
+                  <span class="exp-badge" *ngIf="exp.badge">{{ exp.badge }}</span>
+                </h4>
               </div>
             </div>
             <span class="exp-period">{{ exp.period }}</span>

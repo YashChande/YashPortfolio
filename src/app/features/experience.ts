@@ -15,20 +15,22 @@ export class ExperienceComponent implements AfterViewInit {
       title: 'Founder',
       company: 'Docuvia',
       period: 'July 2025 - Present',
-      description: 'Docuvia is an AI-powered document intelligence, risk analytics, and decision support platform that transforms unstructured documents into actionable insights, visual analytics, and measurable improvement over time.',
+      description: 'Developed Docuvia end-to-end - an AI-powered document intelligence and risk analytics platform. Architected the full-stack system using Angular, C#, and Llama 3, enabling automated extraction of actionable insights and visual analytics from unstructured documents, currently live and in active development.',
       highlights: ['Angular', 'Llama 3', 'C#', 'TypeScript', 'SQLite', 'HTML5', 'CSS', 'PrimeNG'],
-      logo: 'assets/docuvia.jpg'
+      logo: 'assets/docuvia.jpg',
+      website: 'https://docuvia-frontend.onrender.com',
+      badge: 'In Development'
     },
     {
       title: 'Software Developer',
       company: 'ARCON',
       period: 'June 2023 - July 2025',
       description: `Worked on ARCON's Security Compliance Management (SCM) product:
-• Developed responsive Angular interfaces and backend APIs using .NET technologies.
-• Designed the Email configuration page and worked on Cron-based scheduling formats.
-• Implemented lazy-loaded tree structures and optimized SQL Server operations using LINQ & Dapper.
-• Resolved critical application bugs and collaborated across teams to deliver high-quality solutions.`,
-      highlights: ['Angular & TypeScript', '.NET & C#', 'SQL-based Databases', 'Email Automation', 'Security Compliance', 'LINQ', 'Debugging'],
+• Developed responsive Angular interfaces and backend APIs using .NET technologies, contributing to a full UI migration from legacy screens to a modern component-based architecture.
+• Designed the Email configuration page and implemented Cron-based scheduling, automating recurring compliance report delivery and reducing manual intervention.
+• Implemented lazy-loaded tree structures and optimized SQL Server operations using LINQ & Dapper, and contributed to a database migration from SQL Server to MySQL improving cross-platform portability.
+• Resolved 200+ bugs of varying criticality across the SCM product, collaborating across teams to maintain product stability and accelerate release cycles.`,
+      highlights: ['Angular & TypeScript', '.NET & C#', 'SQL Server & MySQL', 'Email Automation', 'Security Compliance', 'LINQ', 'Debugging'],
       logo: 'assets/arcon_risk_control_logo.jpg'
     },
     {
