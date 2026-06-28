@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnimationService } from '../core/services/animation.service';
+import { GameService } from '../core/services/game.service';
 
 @Component({
   selector: 'app-header',
@@ -21,7 +22,10 @@ export class HeaderComponent {
     { label: 'Contact', id: '#contact' }
   ];
 
-  constructor(private animService: AnimationService) {}
+  constructor(
+    private animService: AnimationService,
+    private gameService: GameService
+  ) {}
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -33,6 +37,6 @@ export class HeaderComponent {
   }
 
   showNewFeature() {
-    alert('Work in Progress... Will be available in the next release');
+    this.gameService.open();
   }
 }

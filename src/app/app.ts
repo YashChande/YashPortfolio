@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './features/header';
@@ -11,6 +11,11 @@ import { ContactComponent } from './features/contact';
 import { FooterComponent } from './features/footer';
 import { AnimationService } from './core/services/animation.service';
 import { ThreeService } from './core/services/three.service';
+import { GameService } from './core/services/game.service';
+
+// Native game canvas dimensions
+const GAME_W = 950;
+const GAME_H = 780;
 
 @Component({
   selector: 'app-root',
@@ -32,16 +37,59 @@ import { ThreeService } from './core/services/three.service';
 export class App implements AfterViewInit {
   @ViewChild('bgContainer', { static: true }) bgContainer!: ElementRef;
 
+  // Computed scale factor so the game always fits the viewport
+  private gameScale = 1;
+  gameContainerStyle: Record<string, string> = {};
+  gameIframeStyle: Record<string, string> = {};
+
   constructor(
     private animationService: AnimationService,
     private threeService: ThreeService,
+    public gameService: GameService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
+
+  @HostListener('window:resize')
+  onResize() {
+    this.computeGameScale();
+  }
+
+  private computeGameScale() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const padding = 80; // total vertical + close-btn room
+    const scaleX = (window.innerWidth - 32) / GAME_W;
+    const scaleY = (window.innerHeight - padding) / GAME_H;
+    this.gameScale = Math.min(1, scaleX, scaleY);
+
+    const w = Math.floor(GAME_W * this.gameScale);
+    const h = Math.floor(GAME_H * this.gameScale);
+
+    this.gameContainerStyle = {
+      width: `${w}px`,
+      height: `${h}px`,
+    };
+
+    this.gameIframeStyle = {
+      width: `${GAME_W}px`,
+      height: `${GAME_H}px`,
+      transform: `scale(${this.gameScale})`,
+      transformOrigin: 'top left',
+      border: 'none',
+      background: 'black',
+      display: 'block'
+    };
+  }
 
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.threeService.init(this.bgContainer.nativeElement);
       this.initCustomCursor();
+      this.computeGameScale();
+
+      // Recompute when the game modal opens
+      this.gameService.isActive$.subscribe(active => {
+        if (active) this.computeGameScale();
+      });
     }
   }
 

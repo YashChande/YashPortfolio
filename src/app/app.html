@@ -27,3 +27,11 @@
 </main>
 
 <app-footer></app-footer>
+
+<div class="game-modal" *ngIf="gameService.isActive$ | async">
+  <div class="game-modal-overlay" (click)="gameService.close()"></div>
+  <div class="game-modal-container" [ngStyle]="gameContainerStyle">
+    <button class="close-btn" (click)="gameService.close()" aria-label="Close Game">&times;</button>
+    <iframe src="space-shooter/index.html" class="game-iframe" [ngStyle]="gameIframeStyle"></iframe>
+  </div>
+</div>
