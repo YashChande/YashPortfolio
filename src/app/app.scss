@@ -152,28 +152,26 @@ app-footer, main {
 }
 
 .close-btn {
-  position: fixed;
-  top: 1rem;
-  right: 1.5rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
   background: rgba(10, 10, 20, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
   z-index: 12000;
-  opacity: 0.85;
   transition: all 0.2s;
   backdrop-filter: blur(4px);
 
   &:hover {
-    opacity: 1;
     color: $accent-cyan;
     border-color: $accent-cyan;
     box-shadow: 0 0 10px rgba($accent-cyan, 0.4);

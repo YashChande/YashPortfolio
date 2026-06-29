@@ -31,7 +31,7 @@
 <div class="game-modal" *ngIf="gameService.isActive$ | async">
   <div class="game-modal-overlay" (click)="gameService.close()"></div>
   <div class="game-modal-container" [ngStyle]="gameContainerStyle">
-    <button class="close-btn" (click)="gameService.close()" aria-label="Close Game">&times;</button>
     <iframe src="space-shooter/index.html" class="game-iframe" [ngStyle]="gameIframeStyle"></iframe>
+    <button class="close-btn" (click)="gameService.close()" aria-label="Close Game" [ngStyle]="{ transform: 'scale(' + gameScale + ') translate(-20px, -20px)', 'transform-origin': 'bottom right' }">&times;</button>
   </div>
 </div>

@@ -491,13 +491,13 @@ function drawBackground() {
 function drawHUD() {
     ctx.fillStyle = '#ff3333';
     ctx.font = "40px 'Orbitron', 'Comicsans', sans-serif";
-    ctx.fillText(`Lives: ${lives}`, 80, 50);
+    ctx.fillText(`Lives: ${lives}`, 160, 50);
 
     ctx.fillStyle = '#00ff88';
     ctx.font = "40px 'Orbitron', 'Comicsans', sans-serif";
     const levelText = `Level: ${level}`;
     const levelWidth = ctx.measureText(levelText).width;
-    ctx.fillText(levelText, WIDTH - levelWidth - 10, 50);
+    ctx.fillText(levelText, WIDTH - levelWidth - 60, 50);
 
     // Score indicator (extra cool feature)
     ctx.fillStyle = '#ffcc00';
@@ -509,11 +509,11 @@ function drawHUD() {
 
 // Leaderboard Initialization & Management
 const DEFAULT_LEADERBOARD = [
-    { name: 'YASH', score: 500, date: 1600000000000 },
-    { name: 'PILOT', score: 300, date: 1600000000001 },
-    { name: 'ACE', score: 200, date: 1600000000002 },
-    { name: 'ROOKIE', score: 100, date: 1600000000003 },
-    { name: 'NOOB', score: 50, date: 1600000000004 }
+    { name: 'YASH', score: 2820, date: 1600000000000 },
+    { name: 'HOMELANDER', score: 2050, date: 1600000000001 },
+    { name: 'VOLDEMORT', score: 1620, date: 1600000000002 },
+    { name: 'THANOS', score: 710, date: 1600000000003 },
+    { name: 'BLACK DOUG', score: 230, date: 1600000000004 }
 ];
 
 function initLeaderboard() {
@@ -528,6 +528,11 @@ function initLeaderboard() {
     if (stored) {
         try {
             leaderboard = JSON.parse(stored);
+            // Upgrade old default leaderboard to the new values
+            if (leaderboard.length > 0 && (leaderboard[0].score === 500 || leaderboard[0].score === 2450) && leaderboard[0].name === 'YASH') {
+                leaderboard = [...DEFAULT_LEADERBOARD];
+                localStorage.setItem('space_shooter_leaderboard', JSON.stringify(leaderboard));
+            }
         } catch (e) {
             leaderboard = [...DEFAULT_LEADERBOARD];
         }
@@ -746,9 +751,57 @@ const restartBtn = document.getElementById('restartButton');
 const soundToggleBtn = document.getElementById('soundToggle');
 const soundOnIcon = document.getElementById('soundOnIcon');
 const soundOffIcon = document.getElementById('soundOffIcon');
+const bgMusic = document.getElementById('bgMusic');
+const volumeSlider = document.getElementById('volumeSlider');
+
+// Set initial music volume from slider default
+if (bgMusic && volumeSlider) {
+    bgMusic.volume = parseInt(volumeSlider.value) / 100;
+}
+
+// Volume slider: adjust bgMusic volume in real time
+if (volumeSlider) {
+    volumeSlider.addEventListener('input', () => {
+        const vol = parseInt(volumeSlider.value) / 100;
+        if (bgMusic) bgMusic.volume = vol;
+        // If slider is dragged to 0, treat as muted
+        if (vol === 0 && soundEnabled) {
+            soundEnabled = false;
+            soundOnIcon.classList.add('hidden');
+            soundOffIcon.classList.remove('hidden');
+        } else if (vol > 0 && !soundEnabled) {
+            soundEnabled = true;
+            soundOnIcon.classList.remove('hidden');
+            soundOffIcon.classList.add('hidden');
+        }
+    });
+}
+
+function playBgMusic() {
+    if (bgMusic && soundEnabled) {
+        bgMusic.play().catch(e => {
+            console.log("Autoplay prevented. Music will play upon user interaction.");
+            // One-off listeners to play music on first click/keypress
+            const enableAudio = () => {
+                if (soundEnabled) bgMusic.play().catch(err => console.log(err));
+                window.removeEventListener('click', enableAudio);
+                window.removeEventListener('keydown', enableAudio);
+            };
+            window.addEventListener('click', enableAudio);
+            window.addEventListener('keydown', enableAudio);
+        });
+    }
+}
+
+function pauseBgMusic() {
+    if (bgMusic) {
+        bgMusic.pause();
+    }
+}
 
 startBtn.addEventListener('click', () => {
     initAudio();
+    playBgMusic();
     const nameInput = document.getElementById('playerNameInput');
     playerName = nameInput ? nameInput.value.trim() : '';
     if (!playerName) playerName = 'PILOT';
@@ -761,6 +814,7 @@ startBtn.addEventListener('click', () => {
 
 restartBtn.addEventListener('click', () => {
     initAudio();
+    playBgMusic();
     document.getElementById('gameOverScreen').classList.remove('active');
     gameState = 'PLAYING';
     resetGame();
@@ -772,9 +826,17 @@ soundToggleBtn.addEventListener('click', () => {
         soundOnIcon.classList.remove('hidden');
         soundOffIcon.classList.add('hidden');
         initAudio();
+        // Restore slider to last non-zero value or default 80
+        if (volumeSlider && parseInt(volumeSlider.value) === 0) {
+            volumeSlider.value = 80;
+        }
+        if (bgMusic && volumeSlider) bgMusic.volume = parseInt(volumeSlider.value) / 100;
+        playBgMusic();
     } else {
         soundOnIcon.classList.add('hidden');
         soundOffIcon.classList.remove('hidden');
+        if (volumeSlider) volumeSlider.value = 0;
+        pauseBgMusic();
     }
 });
 
@@ -808,6 +870,9 @@ function gameLoop(currentTime) {
 function preloadAndInit() {
     // Initialize leaderboard and name inputs
     initLeaderboard();
+    
+    // Play background music
+    playBgMusic();
     
     // Create pre-game star background
     initStarfield();

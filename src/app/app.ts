@@ -38,7 +38,7 @@ export class App implements AfterViewInit {
   @ViewChild('bgContainer', { static: true }) bgContainer!: ElementRef;
 
   // Computed scale factor so the game always fits the viewport
-  private gameScale = 1;
+  public gameScale = 1;
   gameContainerStyle: Record<string, string> = {};
   gameIframeStyle: Record<string, string> = {};
 
