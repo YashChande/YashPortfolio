@@ -1,7 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnimationService } from '../core/services/animation.service';
-import { GameService } from '../core/services/game.service';
 
 @Component({
   selector: 'app-header',
@@ -23,8 +22,7 @@ export class HeaderComponent {
   ];
 
   constructor(
-    private animService: AnimationService,
-    private gameService: GameService
+    private animService: AnimationService
   ) {}
 
   @HostListener('window:scroll', [])
@@ -34,9 +32,5 @@ export class HeaderComponent {
 
   scrollTo(id: string) {
     this.animService.scrollTo(id);
-  }
-
-  showNewFeature() {
-    this.gameService.open();
   }
 }
