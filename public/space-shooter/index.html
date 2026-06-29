@@ -18,45 +18,31 @@
         <!-- Start Screen Overlay -->
         <div id="startScreen" class="overlay active">
             <div class="glass-panel start-panel">
-                <div class="overlay-grid">
-                    <!-- Left Column: Settings and Controls -->
-                    <div class="grid-col-left">
-                        <h1 class="glow-text">SPACE SHOOTER</h1>
-                        <p class="subtitle">Arcade Edition</p>
-                        
-                        <div class="name-entry-container">
-                            <label for="playerNameInput" class="name-input-label">ENTER PILOT CALLSIGN</label>
-                            <input type="text" id="playerNameInput" placeholder="PILOT NAME" maxlength="10" class="name-input">
-                        </div>
-                        
-                        <button id="startButton" class="btn btn-primary">LAUNCH MISSION</button>
-                        
-                        <div class="controls-guide">
-                            <h3>CONTROLS</h3>
-                            <div class="control-row">
-                                <span class="key-group">
-                                    <span class="key">▲</span><span class="key">◀</span><span class="key">▼</span><span class="key">▶</span> 
-                                </span>
-                                <span class="or">OR</span> 
-                                <span class="key-group">
-                                    <span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span>
-                                </span>
-                                <span class="action">Move Ship</span>
-                            </div>
-                            <div class="control-row">
-                                <span class="key space-key">SPACEBAR</span>
-                                <span class="action">Fire Lasers</span>
-                            </div>
-                        </div>
+                <div class="start-single-col">
+                    <h1 class="glow-text">SPACE SHOOTER</h1>
+                    
+                    <div class="name-entry-container">
+                        <label for="playerNameInput" class="name-input-label">Enter Pilot Name</label>
+                        <input type="text" id="playerNameInput" placeholder="PILOT NAME" maxlength="10" class="name-input">
                     </div>
                     
-                    <!-- Right Column: Leaderboard -->
-                    <div class="grid-col-right">
-                        <div class="leaderboard-container">
-                            <h2 class="leaderboard-title">TOP PILOTS</h2>
-                            <div class="leaderboard-list-wrapper">
-                                <ol id="startLeaderboardList" class="leaderboard-list"></ol>
-                            </div>
+                    <button id="startButton" class="btn btn-primary">Launch</button>
+                    
+                    <div class="controls-guide">
+                        <h3>CONTROLS</h3>
+                        <div class="control-row">
+                            <span class="key-group">
+                                <span class="key">▲</span><span class="key">◄</span><span class="key">▼</span><span class="key">►</span> 
+                            </span>
+                            <span class="or">OR</span> 
+                            <span class="key-group">
+                                <span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span>
+                            </span>
+                            <span class="action">Move Ship</span>
+                        </div>
+                        <div class="control-row">
+                            <span class="key space-key">SPACEBAR</span>
+                            <span class="action">Fire Lasers</span>
                         </div>
                     </div>
                 </div>
@@ -71,13 +57,13 @@
                     <div class="grid-col-left">
                         <h1 class="glow-text error-text">GAME OVER</h1>
                         <div class="stats-card">
-                            <p class="stats-summary">Mission Failed at Level <span id="finalLevel" class="highlight-text">1</span></p>
+                            <p class="stats-summary">Ship Crashed at level <span id="finalLevel" class="highlight-text">1</span></p>
                             <div class="score-summary-row">
                                 <span>FINAL SCORE:</span> <span id="finalScore" class="score-highlight">0</span>
                             </div>
                         </div>
                         
-                        <button id="restartButton" class="btn btn-danger">RESPAWN</button>
+                        <button id="restartButton" class="btn btn-danger">Play Again</button>
                     </div>
                     
                     <!-- Right Column: Leaderboard -->
@@ -93,11 +79,20 @@
             </div>
         </div>
 
-        <!-- Mute/Sound Toggle UI -->
-        <button id="soundToggle" class="sound-toggle" aria-label="Toggle Sound">
-            <span id="soundOnIcon">🔊</span>
-            <span id="soundOffIcon" class="hidden">🔇</span>
-        </button>
+        <!-- Background Music -->
+        <audio id="bgMusic" src="assets/da-da-da.mp3" loop></audio>
+
+        <!-- Volume Group: Mute/Sound Toggle + Volume Slider on hover -->
+        <div class="volume-group" id="volumeGroup">
+            <button id="soundToggle" class="sound-toggle" aria-label="Toggle Sound">
+                <span id="soundOnIcon">🔊</span>
+                <span id="soundOffIcon" class="hidden">🔇</span>
+            </button>
+            <div class="volume-slider-wrapper" id="volumeSliderWrapper">
+                <span class="vol-label">VOL</span>
+                <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="80">
+            </div>
+        </div>
     </div>
 
     <footer class="game-footer">
