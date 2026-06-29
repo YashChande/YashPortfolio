@@ -71,6 +71,10 @@
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.4s ease;
 
   &:hover {
     background: white;

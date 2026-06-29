@@ -1,6 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnimationService } from '../core/services/animation.service';
+import { GameService } from '../core/services/game.service';
 
 @Component({
   selector: 'app-projects',
@@ -19,7 +20,8 @@ export class ProjectsComponent implements AfterViewInit {
       description: 'Authentication system for manufacturing units using yawn detection and vehicle verification. Published in IRJMETS Volume 5.',
       tags: ['Python', 'Automation', 'Manufacturing', 'Research'],
       link: 'https://drive.google.com/file/d/19Ozql_o579aWcmxLB9Pm3-683A_AVIPi/view',
-      buttonLabel: 'View Credential'
+      buttonLabel: 'View Credential',
+      isGame: false
     },
     {
       title: 'Translation Ally',
@@ -29,27 +31,30 @@ export class ProjectsComponent implements AfterViewInit {
       description: 'Built a real-time document and speech-to-speech translation and transcription platform supporting multiple languages',
       tags: ['Django', 'Python', 'NLP', 'SIH 2022'],
       link: 'https://translation-ally-6wbv.onrender.com/',
-      buttonLabel: 'Visit Deployed Site'
+      buttonLabel: 'Visit Deployed Site',
+      isGame: false
     },
     {
       title: 'Skin Cancer Detection',
       category: 'Deep Learning',
       date: 'Jan 2022 – Jun 2022',
       image: 'assets/skin_cancer_detection.png',
-      description: 'Developed a website to detect skin cancer to aid doctors and patients for early diagnosis of the disease. Incorporated deep learning concepts like CNN and YOLO for faster and accurate image classification. Used packages like PyTorch and DenseNet for training of the model.',
+      description: 'Developed a CNN and YOLO-powered website to detect skin cancer from images, aiding early diagnosis using PyTorch and DenseNet for accurate image classification.',
       tags: ['PyTorch', 'YOLO', 'CNN', 'DenseNet', 'Machine learning'],
       link: null,
-      buttonLabel: null
+      buttonLabel: null,
+      isGame: false
     },
     {
-      title: 'Covid-19 Tracker',
-      category: 'Web Application',
-      date: 'Jun 2021 – Dec 2021',
-      image: 'assets/covid_tracker.png',
-      description: 'Developed an interactive Covid-19 hotspot tracking web application with live case data visualization using Folium maps and Django. Enabled location-based hotspot detection and real-time data updates to help users stay informed during the pandemic.',
-      tags: ['Django', 'Python', 'Folium', 'Data Viz'],
+      title: 'Space Shooter PyGame',
+      category: 'Personal Project',
+      date: 'Mar 2021 – Oct 2021',
+      image: 'assets/space_shooter_preview.png',
+      description: 'Developed a space shooter game using Python and Pygame. Features multi-level enemy waves, local high score tracking, sound toggles, and optimized sprite collision physics.',
+      tags: ['Python', 'Pygame', 'Game Dev', 'Audio Synth'],
       link: null,
-      buttonLabel: null
+      buttonLabel: 'Play Now',
+      isGame: true
     }
   ];
 
@@ -98,7 +103,14 @@ export class ProjectsComponent implements AfterViewInit {
     }
   ];
 
-  constructor(private animService: AnimationService) { }
+  constructor(
+    private animService: AnimationService,
+    private gameService: GameService
+  ) { }
+
+  playGame() {
+    this.gameService.open();
+  }
 
   ngAfterViewInit() {
     const gsap = this.animService.gsap;

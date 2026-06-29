@@ -7,7 +7,12 @@
         <div class="project-image-container">
           <img [src]="project.image" [alt]="project.title" class="project-image">
           <div class="project-overlay" *ngIf="project.buttonLabel">
-            <a [href]="project.link" target="_blank" class="view-project">{{ project.buttonLabel }}</a>
+            <ng-container *ngIf="project.isGame; else standardLink">
+              <button (click)="playGame()" class="view-project">{{ project.buttonLabel }}</button>
+            </ng-container>
+            <ng-template #standardLink>
+              <a [href]="project.link" target="_blank" class="view-project">{{ project.buttonLabel }}</a>
+            </ng-template>
           </div>
         </div>
 
