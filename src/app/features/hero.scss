@@ -22,6 +22,12 @@
   }
 }
 
+.profile-container {
+  @media (max-width: 992px) {
+    order: -1; // Photo moves above the text on mobile
+  }
+}
+
 .hero-title {
   font-size: clamp(3rem, 8vw, 6rem);
   font-weight: 800;
@@ -60,6 +66,18 @@
   
   @media (max-width: 992px) {
     justify-content: center;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    width: 100%;
+
+    .btn {
+      display: block;
+      text-align: center;
+    }
   }
 }
 
@@ -129,6 +147,11 @@
   @media (max-width: 992px) {
     width: 280px;
     height: 350px;
+  }
+
+  @media (max-width: 480px) {
+    width: 240px;
+    height: 300px;
   }
 
   // Multi-directional gradient overlays
