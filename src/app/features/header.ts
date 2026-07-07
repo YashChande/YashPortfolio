@@ -11,6 +11,7 @@ import { AnimationService } from '../core/services/animation.service';
 })
 export class HeaderComponent {
   isScrolled = false;
+  mobileMenuOpen = false;
   resumeUrl = 'https://drive.google.com/file/d/106UQFavTfF1JRLYkogVVg0kHjc7nDzVO/view?usp=sharing';
   navItems = [
     { label: 'About', id: '#about' },
@@ -30,7 +31,12 @@ export class HeaderComponent {
     this.isScrolled = window.scrollY > 50;
   }
 
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
   scrollTo(id: string) {
+    this.mobileMenuOpen = false;
     this.animService.scrollTo(id);
   }
 }

@@ -27,6 +27,10 @@ header {
   position: relative;
   padding: 0.6rem 2.5rem;
   transition: $transition-smooth;
+
+  @media (max-width: 768px) {
+    padding: 0.6rem 1.25rem;
+  }
   
   &::before {
     content: '';
@@ -138,7 +142,8 @@ header {
   border: 1px solid rgba($accent-cyan, 0.3);
   background: rgba($accent-cyan, 0.05);
   cursor: pointer;
-  transition: $transition-smooth;
+  opacity: 0;
+  transition: $transition-smooth, opacity 0.4s ease;
   text-decoration: none;
 
   svg {
@@ -146,6 +151,7 @@ header {
   }
 
   &:hover {
+    opacity: 1;
     background: rgba($accent-cyan, 0.15);
     border-color: $accent-cyan;
     box-shadow: 0 0 15px rgba($accent-cyan, 0.2);
@@ -172,3 +178,92 @@ header {
     color: $bg-color;
   }
 }
+
+// Mobile Toggle styling
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 26px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+
+  .bar {
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform-origin: left center;
+  }
+
+  &.active {
+    .bar:nth-child(1) {
+      transform: rotate(45deg) translate(2px, -2px);
+    }
+    .bar:nth-child(2) {
+      width: 0%;
+      opacity: 0;
+    }
+    .bar:nth-child(3) {
+      transform: rotate(-45deg) translate(2px, 2px);
+    }
+  }
+}
+
+// Mobile Drawer overlay menu
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba($bg-color, 0.92);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+
+  &.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 0;
+
+    a {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: $text-secondary;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: $transition-smooth;
+      padding: 0.5rem 1rem;
+
+      &:hover {
+        color: $accent-cyan;
+        text-shadow: 0 0 10px rgba($accent-cyan, 0.5);
+      }
+    }
+  }
+}
+

@@ -1,4 +1,4 @@
-<header [class.scrolled]="isScrolled">
+<header [class.scrolled]="isScrolled" [class.menu-open]="mobileMenuOpen">
   <nav class="container nav-container">
     <div class="logo" (click)="scrollTo('#hero')">
       <span class="logo-text">YC</span>
@@ -26,6 +26,22 @@
         </svg>
         <span>Resume</span>
       </a>
+
+      <!-- Hamburger toggle button -->
+      <button class="mobile-menu-toggle" (click)="toggleMobileMenu()" [class.active]="mobileMenuOpen" aria-label="Toggle navigation menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
     </div>
   </nav>
+
+  <!-- Mobile Drawer Menu overlay -->
+  <div class="mobile-drawer" [class.open]="mobileMenuOpen">
+    <ul class="mobile-nav-links">
+      <li *ngFor="let item of navItems">
+        <a (click)="scrollTo(item.id)">{{ item.label }}</a>
+      </li>
+    </ul>
+  </div>
 </header>
