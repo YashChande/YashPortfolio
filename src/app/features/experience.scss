@@ -2,6 +2,9 @@
 
 .experience-section {
   padding: 8rem 0;
+  @media (max-width: 768px) {
+    padding: 4rem 0;
+  }
 }
 
 .timeline {
@@ -9,6 +12,10 @@
   max-width: 800px;
   margin: 0 auto;
   padding-left: 3rem;
+
+  @media (max-width: 600px) {
+    padding-left: 1.75rem;
+  }
 }
 
 .timeline-line {
@@ -27,6 +34,10 @@
   &:last-child {
     margin-bottom: 0;
   }
+
+  @media (max-width: 600px) {
+    margin-bottom: 2.5rem;
+  }
 }
 
 .timeline-dot {
@@ -41,20 +52,32 @@
   transform: translateX(-50%);
   z-index: 2;
   box-shadow: $glow-cyan;
+
+  @media (max-width: 600px) {
+    left: -1.75rem;
+    top: 1.5rem;
+    width: 12px;
+    height: 12px;
+  }
 }
 
 .experience-card {
   padding: 2.5rem;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
   
   .exp-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 1.5rem;
+    gap: 1rem;
     
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
     }
   }
   
@@ -63,12 +86,21 @@
     align-items: center;
     gap: 1.2rem;
     
+    @media (max-width: 480px) {
+      gap: 0.8rem;
+    }
+
     .exp-logo {
       width: 65px;
       height: 65px;
       border-radius: 8px;
       object-fit: contain;
       flex-shrink: 0;
+
+      @media (max-width: 480px) {
+        width: 50px;
+        height: 50px;
+      }
     }
   }
   
@@ -76,6 +108,10 @@
     font-size: 1.5rem;
     color: $text-primary;
     margin-bottom: 0.3rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.25rem;
+    }
   }
   
   .exp-company {
@@ -86,6 +122,10 @@
     align-items: center;
     gap: 0.8rem;
     flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      font-size: 0.95rem;
+    }
     
     .company-link {
       color: $accent-cyan;
@@ -135,6 +175,12 @@
     font-size: 0.9rem;
     color: $text-secondary;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    white-space: nowrap;
+
+    @media (max-width: 768px) {
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8rem;
+    }
   }
   
   .exp-desc {
@@ -142,6 +188,11 @@
     line-height: 1.7;
     margin-bottom: 2rem;
     white-space: pre-line;
+
+    @media (max-width: 768px) {
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
   }
 }
 
