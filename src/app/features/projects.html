@@ -3,7 +3,7 @@
     <h2 class="section-title">Projects</h2>
 
     <div class="projects-grid">
-      <div class="project-card glass-card" *ngFor="let project of projects">
+      <div class="project-card glass-card" *ngFor="let project of projects" [id]="project.isGame ? 'space-shooter-card' : ''">
         <div class="project-image-container">
           <img [src]="project.image" [alt]="project.title" class="project-image">
           <div class="project-overlay" *ngIf="project.buttonLabel">
@@ -11,7 +11,12 @@
               <button (click)="playGame()" class="view-project">{{ project.buttonLabel }}</button>
             </ng-container>
             <ng-template #standardLink>
-              <a [href]="project.link" target="_blank" class="view-project">{{ project.buttonLabel }}</a>
+              <ng-container *ngIf="project.isMaintenance; else normalExternal">
+                <button (click)="showMaintenanceToast()" class="view-project">{{ project.buttonLabel }}</button>
+              </ng-container>
+              <ng-template #normalExternal>
+                <a [href]="project.link" target="_blank" class="view-project">{{ project.buttonLabel }}</a>
+              </ng-template>
             </ng-template>
           </div>
         </div>
@@ -47,5 +52,15 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast-error" [class.show]="showToast">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="toast-icon">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+      <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="12" cy="16" r="1" fill="currentColor"/>
+    </svg>
+    <span>{{ toastMessage }}</span>
   </div>
 </section>

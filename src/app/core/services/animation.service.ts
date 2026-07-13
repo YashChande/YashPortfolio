@@ -48,7 +48,7 @@ export class AnimationService {
     return gsap;
   }
 
-  scrollTo(target: string | HTMLElement) {
-    this.lenis?.scrollTo(target);
+  scrollTo(target: string | HTMLElement, offset: number = 0) {
+    this.lenis?.scrollTo(target, { offset });
   }
 }

@@ -42,8 +42,9 @@ export class ProjectsComponent implements AfterViewInit {
       description: 'Developed a CNN and YOLO-powered website to detect skin cancer from images, aiding early diagnosis using PyTorch and DenseNet for accurate image classification.',
       tags: ['PyTorch', 'YOLO', 'CNN', 'DenseNet', 'Machine learning'],
       link: null,
-      buttonLabel: null,
-      isGame: false
+      buttonLabel: 'Visit Deployed Site',
+      isGame: false,
+      isMaintenance: true
     },
     {
       title: 'Space Shooter PyGame',
@@ -103,6 +104,10 @@ export class ProjectsComponent implements AfterViewInit {
     }
   ];
 
+  showToast = false;
+  toastMessage = '';
+  private toastTimer: any;
+
   constructor(
     private animService: AnimationService,
     private gameService: GameService
@@ -110,6 +115,15 @@ export class ProjectsComponent implements AfterViewInit {
 
   playGame() {
     this.gameService.open();
+  }
+
+  showMaintenanceToast() {
+    this.toastMessage = 'Site is under maintenance. Please try again later.';
+    this.showToast = true;
+    clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => {
+      this.showToast = false;
+    }, 3500);
   }
 
   ngAfterViewInit() {

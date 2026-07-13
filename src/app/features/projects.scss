@@ -2,13 +2,21 @@
 
 .projects-section {
   padding: 8rem 0;
+  @media (max-width: 768px) {
+    padding: 4rem 0;
+  }
 }
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
   gap: 3rem;
   margin-bottom: 6rem;
+
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -84,6 +92,10 @@
 
 .project-info {
   padding: 2.5rem;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
 
   .project-meta {
     display: flex;
@@ -198,3 +210,49 @@
   width: 100%;
   height: 100%;
 }
+
+/* Toast Error Notification (Transparent Glassmorphic style) */
+.toast-error {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: rgba(10, 10, 15, 0.5);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  z-index: 10000;
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+
+  &.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .toast-icon {
+    flex-shrink: 0;
+    color: #ff3366;
+    animation: pulseIcon 1.5s infinite alternate;
+  }
+}
+
+@keyframes pulseIcon {
+  from { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255, 51, 102, 0.4)); }
+  to { transform: scale(1.15); filter: drop-shadow(0 0 8px rgba(255, 51, 102, 0.8)); }
+}
+
+
+
