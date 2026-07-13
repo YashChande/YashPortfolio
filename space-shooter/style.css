@@ -591,3 +591,43 @@ h1 {
     font-size: 1.5rem;
     text-shadow: 0 0 10px rgba(255, 183, 0, 0.4);
 }
+
+/* Mobile Touch controls styling */
+.mobile-fire-btn {
+    display: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+    .mobile-fire-btn.visible {
+        display: flex;
+        position: absolute;
+        bottom: 90px;
+        left: 20px;
+        width: 85px;
+        height: 85px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(255, 51, 102, 0.4) 0%, rgba(163, 0, 51, 0.4) 100%);
+        border: 2px solid rgba(255, 51, 102, 0.8);
+        color: white;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 900;
+        font-size: 1.25rem;
+        letter-spacing: 1px;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 20px rgba(255, 51, 102, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.2);
+        z-index: 100;
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        backdrop-filter: blur(5px);
+        transition: transform 0.1s ease, background 0.1s ease;
+    }
+    
+    .mobile-fire-btn.visible:active {
+        transform: scale(0.92);
+        background: linear-gradient(135deg, rgba(255, 51, 102, 0.8) 0%, rgba(163, 0, 51, 0.8) 100%);
+        box-shadow: 0 0 30px rgba(255, 51, 102, 0.8);
+    }
+}
+
