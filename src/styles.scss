@@ -116,3 +116,15 @@ html.lenis {
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
+
+
+
+.focus-highlight {
+  position: relative !important;
+  z-index: 9999 !important;
+  box-shadow: 0 0 50px rgba($accent-cyan, 0.6) !important;
+  border-color: rgba($accent-cyan, 0.8) !important;
+  transform: scale(1.02) translateY(-5px) !important;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
