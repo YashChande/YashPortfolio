@@ -30,7 +30,18 @@
 
 <div class="game-modal" *ngIf="gameService.isActive$ | async">
   <div class="game-modal-overlay" (click)="gameService.close()"></div>
-  <div class="game-modal-container" [ngStyle]="gameContainerStyle">
+  
+  <!-- Orientation Notice for mobile portrait -->
+  <div class="orientation-notice" *ngIf="isPortraitMobile">
+    <div class="notice-card">
+      <div class="phone-icon-animation">🔄</div>
+      <h3>Rotate Device</h3>
+      <p>Please rotate your device to landscape mode to play Space Shooter!</p>
+      <button class="btn" (click)="gameService.close()">Close Game</button>
+    </div>
+  </div>
+
+  <div class="game-modal-container" [ngStyle]="gameContainerStyle" *ngIf="!isPortraitMobile">
     <iframe src="space-shooter/index.html" class="game-iframe" [ngStyle]="gameIframeStyle"></iframe>
     <button class="close-btn" (click)="gameService.close()" aria-label="Close Game" [ngStyle]="{ transform: 'scale(' + gameScale + ') translate(-20px, -20px)', 'transform-origin': 'bottom right' }">&times;</button>
   </div>

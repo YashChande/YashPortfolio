@@ -39,6 +39,7 @@ export class App implements AfterViewInit {
 
   // Computed scale factor so the game always fits the viewport
   public gameScale = 1;
+  public isPortraitMobile = false;
   gameContainerStyle: Record<string, string> = {};
   gameIframeStyle: Record<string, string> = {};
 
@@ -56,6 +57,10 @@ export class App implements AfterViewInit {
 
   private computeGameScale() {
     if (!isPlatformBrowser(this.platformId)) return;
+
+    // Disable portrait warning to let mobile users play in portrait mode
+    this.isPortraitMobile = false;
+
     const padding = 80; // total vertical + close-btn room
     const scaleX = (window.innerWidth - 32) / GAME_W;
     const scaleY = (window.innerHeight - padding) / GAME_H;
@@ -83,7 +88,10 @@ export class App implements AfterViewInit {
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.threeService.init(this.bgContainer.nativeElement);
-      this.initCustomCursor();
+      const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      if (!isTouch) {
+        this.initCustomCursor();
+      }
       this.computeGameScale();
 
       // Recompute when the game modal opens
