@@ -625,6 +625,7 @@ function updateGame() {
         createExplosion(player.x + player.getWidth()/2, player.y + player.getHeight()/2, '#ffd200', 40);
         
         gameState = 'GAMEOVER';
+        updateMobileControlsVisibility();
         document.getElementById('finalLevel').textContent = level;
         document.getElementById('finalScore').textContent = score;
         document.getElementById('gameOverScreen').classList.add('active');
@@ -745,6 +746,57 @@ window.addEventListener('keyup', (e) => {
     keys[e.code] = false;
 });
 
+// Mobile Touch Control Listeners
+const mobileFireBtn = document.getElementById('mobileFireButton');
+if (mobileFireBtn) {
+    mobileFireBtn.addEventListener('touchstart', (e) => {
+        keys['Space'] = true;
+        e.preventDefault();
+    }, { passive: false });
+    
+    mobileFireBtn.addEventListener('touchend', (e) => {
+        keys['Space'] = false;
+        e.preventDefault();
+    }, { passive: false });
+}
+
+// Touch Movement on Canvas
+canvas.addEventListener('touchstart', handleCanvasTouch, { passive: false });
+canvas.addEventListener('touchmove', handleCanvasTouch, { passive: false });
+
+function handleCanvasTouch(e) {
+    if (gameState !== 'PLAYING' || !player) return;
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    
+    // Map viewport touch to game board coordinates (950x780)
+    const touchX = ((touch.clientX - rect.left) / rect.width) * WIDTH;
+    const touchY = ((touch.clientY - rect.top) / rect.height) * HEIGHT;
+    
+    // Center ship horizontally, offset vertically so finger doesn't block ship visibility
+    player.x = touchX - player.getWidth() / 2;
+    player.y = touchY - player.getHeight() / 2 - 40; 
+    
+    // Keep ship within game board boundaries
+    if (player.x < -30) player.x = -30;
+    if (player.x + player.getWidth() > WIDTH + 30) player.x = WIDTH + 30 - player.getWidth();
+    if (player.y < 20) player.y = 20;
+    if (player.y + player.getHeight() + 20 > HEIGHT) player.y = HEIGHT - player.getHeight() - 20;
+    
+    e.preventDefault();
+}
+
+function updateMobileControlsVisibility() {
+    if (mobileFireBtn) {
+        if (gameState === 'PLAYING') {
+            mobileFireBtn.classList.add('visible');
+        } else {
+            mobileFireBtn.classList.remove('visible');
+        }
+    }
+}
+
+
 // UI Buttons Setup
 const startBtn = document.getElementById('startButton');
 const restartBtn = document.getElementById('restartButton');
@@ -809,6 +861,7 @@ startBtn.addEventListener('click', () => {
 
     document.getElementById('startScreen').classList.remove('active');
     gameState = 'PLAYING';
+    updateMobileControlsVisibility();
     resetGame();
 });
 
@@ -817,6 +870,7 @@ restartBtn.addEventListener('click', () => {
     playBgMusic();
     document.getElementById('gameOverScreen').classList.remove('active');
     gameState = 'PLAYING';
+    updateMobileControlsVisibility();
     resetGame();
 });
 
