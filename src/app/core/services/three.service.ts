@@ -68,7 +68,7 @@ export class ThreeService {
       size: 0.16,
       sizeAttenuation: true,
       transparent: true,
-      opacity: 0.4,
+      opacity: 0.6,
       vertexColors: true,
       blending: THREE.AdditiveBlending,
       map: this.createYCTexture(),
