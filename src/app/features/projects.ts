@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnimationService } from '../core/services/animation.service';
 import { GameService } from '../core/services/game.service';
@@ -39,7 +39,7 @@ export class ProjectsComponent implements AfterViewInit {
       category: 'Deep Learning',
       date: 'Jan 2022 – Jun 2022',
       image: 'assets/skin_cancer_detection.png',
-      description: 'Developed a CNN and YOLO-powered website to detect skin cancer from images, aiding early diagnosis using PyTorch and DenseNet for accurate image classification.',
+      description: 'Developed a CNN and YOLO-powered website to detect skin cancer from images, aiding early diagnosis and for accurate image classification.',
       tags: ['PyTorch', 'YOLO', 'CNN', 'DenseNet', 'Machine learning'],
       link: null,
       buttonLabel: 'Visit Deployed Site',
@@ -51,7 +51,7 @@ export class ProjectsComponent implements AfterViewInit {
       category: 'Personal Project',
       date: 'Mar 2021 – Oct 2021',
       image: 'assets/space_shooter_preview.png',
-      description: 'Developed a space shooter game using Python and Pygame. Features multi-level enemy waves, local high score tracking, sound toggles, and optimized sprite collision physics.',
+      description: 'Developed a space shooter game using Python and Pygame. Features multi-level enemy waves and local high score tracking.',
       tags: ['Python', 'Pygame', 'Game Dev', 'Audio Synth'],
       link: null,
       buttonLabel: 'Play Now',
@@ -108,6 +108,12 @@ export class ProjectsComponent implements AfterViewInit {
   toastMessage = '';
   private toastTimer: any;
 
+  @ViewChild('scrollWrapper', { static: true }) scrollWrapper!: ElementRef;
+  @ViewChild('projectsTrack', { static: true }) projectsTrack!: ElementRef;
+
+  private projectsScrollTl: any;
+  public isMobile = false;
+
   constructor(
     private animService: AnimationService,
     private gameService: GameService
@@ -127,22 +133,71 @@ export class ProjectsComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const gsap = this.animService.gsap;
+    const setupProjectsScroll = () => {
+      const gsap = this.animService.gsap;
+      const ScrollTrigger = this.animService.scrollTrigger;
 
-    gsap.fromTo('.project-card',
-      { y: 50, opacity: 0 },
-      {
-        scrollTrigger: {
-          trigger: '.projects-grid',
-          start: 'top 85%',
-        },
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.2,
-        ease: 'power4.out',
-        clearProps: 'opacity'
+      const track = this.projectsTrack.nativeElement;
+      const wrapper = this.scrollWrapper.nativeElement;
+
+      // Kill existing ScrollTrigger to rebuild with fresh layout calculations
+      if (this.projectsScrollTl) {
+        this.projectsScrollTl.scrollTrigger?.kill();
+        this.projectsScrollTl.kill();
       }
-    );
+
+      this.isMobile = window.innerWidth <= 768;
+
+      // Robust track size calculations to prevent early slide-ups due to DOM render latency
+      const getScrollAmount = () => {
+        const cardCount = track.querySelectorAll('.project-card').length || 5;
+        const cardWidth = this.isMobile ? 290 : 420;
+        const gap = 32; // 2rem
+        const padding = this.isMobile ? 128 : 128;
+        const computedWidth = cardCount * cardWidth + (cardCount - 1) * gap + padding;
+        const trackWidth = Math.max(track.scrollWidth, computedWidth);
+        const amount = trackWidth - window.innerWidth;
+        return amount > 0 ? -amount : 0;
+      };
+
+      // Alignment check:
+      // On desktop: center wrapper vertically in screen before horizontal sliding starts (no cuts)
+      // On mobile: start when the wrapper top hits 80px (just below header)
+      const startPoint = this.isMobile ? 'top 80px' : 'center center';
+
+      this.projectsScrollTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: wrapper,
+          start: startPoint,
+          end: () => {
+            const cardCount = track.querySelectorAll('.project-card').length || 5;
+            const cardWidth = this.isMobile ? 290 : 420;
+            const gap = 32;
+            const padding = this.isMobile ? 128 : 128;
+            const computedWidth = cardCount * cardWidth + (cardCount - 1) * gap + padding;
+            const trackWidth = Math.max(track.scrollWidth, computedWidth);
+            const amount = trackWidth - window.innerWidth;
+            return amount > 0 ? `+=${amount}` : '+=100';
+          },
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true
+        }
+      });
+
+      this.projectsScrollTl.to(track, {
+        x: getScrollAmount,
+        ease: 'none'
+      });
+
+      // Recalculate all ScrollTrigger coordinates across the page
+      ScrollTrigger.refresh();
+    };
+
+    // Defer setup to allow hero and other layout spacers to render
+    setTimeout(setupProjectsScroll, 350);
+
+    // Rebuild triggers on window resize (zoom level changes)
+    window.addEventListener('resize', setupProjectsScroll);
   }
 }

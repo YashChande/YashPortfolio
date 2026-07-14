@@ -1,8 +1,10 @@
-<section class="projects-section" id="projects">
-  <div class="container">
-    <h2 class="section-title">Projects</h2>
+<section class="projects-section" id="projects" #projectsSection>
+  <div class="projects-scroll-wrapper" #scrollWrapper>
+    <div class="container">
+      <h2 class="section-title">Projects</h2>
+    </div>
 
-    <div class="projects-grid">
+    <div class="projects-track" #projectsTrack>
       <div class="project-card glass-card" *ngFor="let project of projects" [id]="project.isGame ? 'space-shooter-card' : ''">
         <div class="project-image-container">
           <img [src]="project.image" [alt]="project.title" class="project-image">
@@ -35,7 +37,9 @@
         </div>
       </div>
     </div>
+  </div>
 
+  <div class="container">
     <div class="certifications-section" id="certifications">
       <h2 class="section-title">Honours &amp; Certifications</h2>
       <div class="certs-grid">
