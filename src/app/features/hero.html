@@ -1,35 +1,49 @@
-<section class="hero-section">
-  <div class="container hero-grid">
-    <div class="hero-text" #heroContent>
-      <h1 class="hero-title">
-        <span class="text-gradient">Yash Chande</span>
-      </h1>
-      <h2 class="hero-tagline">
-        Software Engineer • Cybersecurity • Data Systems
-      </h2>
-      <p class="hero-subtitle">
-        2+ years corporate experience in building scalable enterprise applications, cybersecurity compliance systems,
-        and intelligent analytics platforms. Currently Building Docuvia.
-      </p>
-
-      <div class="cta-buttons">
-        <a href="#projects" class="btn btn-primary">View Projects</a>
-        <a href="#contact" class="btn btn-outline">Get in Touch</a>
+<section class="hero-pin-section" id="hero" #pinContainer>
+  <div class="hero-pin-container">
+    
+    <div class="iphone-showcase" #showcase [class.landscape-mode]="!isMobile">
+      
+      <!-- Phone Screen Mask -->
+      <div class="iphone-screen-mask" #screenMask>
+        <div class="hero-content-wrapper" #contentWrapper>
+          
+          <div class="container hero-grid">
+            <div class="hero-text" #heroContent>
+              <h1 class="hero-title">
+                <span class="text-gradient">Yash Chande</span>
+              </h1>
+              <h2 class="hero-tagline">
+                Software Engineer • Cybersecurity • Data Systems
+              </h2>
+              <p class="hero-subtitle">
+                2+ years corporate experience in building scalable enterprise applications, cybersecurity compliance systems,
+                and intelligent analytics platforms. Currently Building Docuvia.
+              </p>
+        
+              <div class="cta-buttons">
+                <a href="#projects" class="btn btn-primary">View Projects</a>
+                <a href="#contact" class="btn btn-outline">Get in Touch</a>
+              </div>
+            </div>
+        
+            <div class="profile-container" #profileContainer>
+              <div class="profile-glow"></div>
+              <div class="profile-frame" #profilePic>
+                <img src="assets/profile.png" alt="Yash Chande" class="profile-img">
+              </div>
+            </div>
+          </div>
+          
+        </div>
       </div>
-    </div>
-
-    <div class="profile-container">
-      <div class="profile-glow"></div>
-      <div class="profile-frame" #profilePic>
-        <img src="assets/profile.png" alt="Yash Chande" class="profile-img">
+      
+      <!-- Physical Phone Frame Overlay -->
+      <div class="iphone-frame-overlay" #frameOverlay>
+        <img src="assets/iphone-17-pro.svg" alt="iPhone 17 Pro Frame" class="iphone-frame-img">
       </div>
+      
     </div>
+    
   </div>
 
-  <div class="scroll-indicator" (click)="scrollToAbout()">
-    <div class="mouse">
-      <div class="wheel"></div>
-    </div>
-    <span>Scroll</span>
-  </div>
 </section>
