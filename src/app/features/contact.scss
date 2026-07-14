@@ -190,6 +190,26 @@
     transform: translateY(0);
     // Show instantly, only delay on hide
     transition: opacity 0.2s ease 0s, transform 0.2s ease 0s, visibility 0s linear 0s;
+
+    @media (max-width: 768px) {
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .phone-hint-popup {
+      white-space: normal;
+      width: 260px;
+      max-width: 80vw;
+      left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      transition: opacity 0.2s ease 1.5s, transform 0.2s ease 1.5s, visibility 0s linear 1.7s;
+
+      &::after {
+        left: 50%;
+        transform: translateX(-50%) rotate(45deg);
+      }
+    }
   }
 }
 
