@@ -25,32 +25,69 @@ export class HeroComponent implements AfterViewInit {
     const gsap = this.animService.gsap;
     
     // Play page-load entrance animation
-    const introTl = gsap.timeline();
-    introTl.from('.hero-title span', {
-      y: 100,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.2,
-      ease: 'power4.out'
+    const introTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+    // Set initial states for the magical lens focus & glow effects
+    gsap.set('.profile-frame', { filter: 'blur(20px)', scale: 1.12, opacity: 0 });
+    gsap.set('.profile-glow', { scale: 0.2, opacity: 0 });
+    gsap.set('.char-inner', { filter: 'drop-shadow(0 0 0px rgba(0, 238, 255, 0))' });
+
+    // 1. Name — each character slides up from behind its overflow-hidden parent
+    introTl.from('.char-inner', {
+      y: '110%',
+      duration: 1.0,
+      stagger: 0.05,
     })
-    .from('.hero-tagline', {
+    // 1b. Light sweep/glow effect on characters as they appear
+    .to('.char-inner', {
+      filter: 'drop-shadow(0 0 15px rgba(0, 238, 255, 0.8))',
+      color: '#ffffff',
+      duration: 0.4,
+      stagger: 0.05,
+    }, 0)
+    // 1c. Transition character fill from solid white to transparent (revealing gradient) and settle glow
+    .to('.char-inner', {
+      '--text-fill': 'rgba(255, 255, 255, 0)',
+      filter: 'drop-shadow(0 0 3px rgba(0, 238, 255, 0.25))',
+      duration: 1.2,
+      stagger: 0.04,
+      ease: 'power2.out'
+    }, 0.4)
+    // 2. Tagline — each word/separator fades + rises after name finishes
+    .from('.tagline-word, .tagline-sep', {
       opacity: 0,
-      y: 20,
-      duration: 0.8,
+      y: 18,
+      duration: 0.7,
+      stagger: 0.08,
       ease: 'power3.out'
     }, '-=0.5')
+    // 3. Subtitle + CTA buttons cascade in
     .from('.hero-subtitle', {
       opacity: 0,
-      y: 20,
+      y: 16,
       duration: 0.8,
       ease: 'power3.out'
     }, '-=0.5')
-    .from('.profile-container', {
+    .from('.cta-buttons', {
       opacity: 0,
-      scale: 0.8,
-      duration: 1.2,
-      ease: 'expo.out'
-    }, '-=0.8');
+      y: 16,
+      duration: 0.7,
+      ease: 'power3.out'
+    }, '-=0.6')
+    // 4. Magical Profile photo entrance (lens focus + expanding aura glow)
+    .to('.profile-glow', {
+      opacity: 0.8,
+      scale: 1.1,
+      duration: 1.5,
+      ease: 'power3.out'
+    }, '-=1.4')
+    .to('.profile-frame', {
+      opacity: 1,
+      scale: 1,
+      filter: 'blur(0px)',
+      duration: 1.6,
+      ease: 'power4.out'
+    }, '-=1.5');
 
     // Interactive mouse move parallax for profile photo
     window.addEventListener('mousemove', (e) => {
@@ -157,7 +194,7 @@ export class HeroComponent implements AfterViewInit {
           id: 'hero-iphone-zoom',
           trigger: this.pinContainer.nativeElement,
           start: 'top top',
-          end: '+=150%',
+          end: '+=50%',
           pin: true,
           scrub: 1,
           invalidateOnRefresh: true
@@ -188,7 +225,4 @@ export class HeroComponent implements AfterViewInit {
     window.addEventListener('resize', setupShowcase);
   }
 
-  scrollToAbout() {
-    this.animService.scrollTo('#about');
-  }
 }

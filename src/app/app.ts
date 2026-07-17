@@ -12,6 +12,7 @@ import { FooterComponent } from './features/footer';
 import { AnimationService } from './core/services/animation.service';
 import { ThreeService } from './core/services/three.service';
 import { GameService } from './core/services/game.service';
+import { AnalyticsService } from './core/services/analytics.service';
 
 // Native game canvas dimensions
 const GAME_W = 950;
@@ -47,6 +48,7 @@ export class App implements AfterViewInit {
     private animationService: AnimationService,
     private threeService: ThreeService,
     public gameService: GameService,
+    private analyticsService: AnalyticsService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -98,6 +100,9 @@ export class App implements AfterViewInit {
       this.gameService.isActive$.subscribe(active => {
         if (active) this.computeGameScale();
       });
+
+      // Log the visit details
+      this.analyticsService.logVisit();
     }
   }
 

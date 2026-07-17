@@ -112,10 +112,30 @@
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 1.5rem;
+}
+
+.title-line {
+  display: block;
+}
+
+// Overflow mask: hides the char below baseline before it slides up
+.char-outer {
+  display: inline-block;
   overflow: hidden;
+  vertical-align: bottom;
+  line-height: 1.15;
+}
+
+.char-inner {
+  display: inline-block;
+  color: #ffffff;
+  background: $grad-blue-cyan;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--text-fill, #ffffff);
   
-  span {
-    display: inline-block;
+  // Set fallback for browsers that don't support text-fill-color
+  @supports not (-webkit-text-fill-color: transparent) {
+    color: var(--text-fill, #ffffff);
   }
 }
 
@@ -125,6 +145,15 @@
   color: $accent-cyan;
   margin-bottom: 1.5rem;
   letter-spacing: 1px;
+}
+
+.tagline-word {
+  display: inline;
+}
+
+.tagline-sep {
+  display: inline;
+  opacity: 0.6;
 }
 
 .hero-subtitle {
@@ -258,53 +287,4 @@
   }
 }
 
-.scroll-indicator {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.3s;
-  
-  &:hover {
-    opacity: 1;
-  }
-  
-  span {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: $text-secondary;
-  }
-}
 
-.mouse {
-  width: 24px;
-  height: 40px;
-  border: 2px solid $text-secondary;
-  border-radius: 12px;
-  position: relative;
-  
-  .wheel {
-    width: 4px;
-    height: 8px;
-    background: $accent-cyan;
-    position: absolute;
-    top: 6px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 2px;
-    animation: scroll-wheel 1.5s infinite;
-  }
-}
-
-@keyframes scroll-wheel {
-  0% { transform: translate(-50%, 0); opacity: 0; }
-  30% { opacity: 1; }
-  100% { transform: translate(-50%, 15px); opacity: 0; }
-}
