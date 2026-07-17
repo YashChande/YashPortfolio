@@ -28,24 +28,23 @@ export class SkillsComponent implements AfterViewInit {
         { name: 'C#', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg' },
         { name: 'Python', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
         { name: 'Django', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg' },
-        { name: 'REST APIs', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/braces.svg' }
+        { name: 'REST APIs', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/visualstudio/visualstudio-original.svg' }
       ]
     },
     {
       name: 'Data & Database',
       skills: [
         { name: 'SQL Server', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoftsqlserver/microsoftsqlserver-original.svg' },
-        { name: 'Data Analytics', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/line-chart.svg' },
-        { name: 'Query Optimization', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/gauge.svg' }
+        { name: 'Data Analytics', icon: 'https://cdn.prod.website-files.com/601064f495f4b4967f921aa9/64246984585c9225aa4e4fc4_databricks.png' },
+        { name: 'Query Optimization', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmNYlKiwU0LjNNf3s1PeKRtSi1bDOqQ7Mt47sDclIhDA&s=10' }
       ]
     },
     {
-      name: 'Specialized',
+      name: 'Domain Experience',
       skills: [
-        { name: 'Cybersecurity', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/shield-check.svg' },
-        { name: 'Compliance Systems', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/clipboard-check.svg' },
-        { name: 'Email Automation', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/mail.svg' },
-        { name: 'System Design', icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.330.0/icons/workflow.svg' }
+        { name: 'Cybersecurity and IT', icon: 'assets/arcon_risk_control_logo.jpg' },
+        { name: 'Equity Trading', icon: 'https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/zerodha-kite-app-icon-hd.png' },
+        { name: 'Video Editing', icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Adobe_Premiere_Pro_CC_icon.svg/3840px-Adobe_Premiere_Pro_CC_icon.svg.png' }
       ]
     }
   ];
