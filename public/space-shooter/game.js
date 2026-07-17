@@ -517,13 +517,11 @@ const DEFAULT_LEADERBOARD = [
 ];
 
 function initLeaderboard() {
-    // Set up name input
     const nameInput = document.getElementById('playerNameInput');
     if (nameInput) {
         nameInput.value = playerName;
     }
 
-    // Load leaderboard
     const stored = localStorage.getItem('space_shooter_leaderboard');
     if (stored) {
         try {
@@ -865,6 +863,17 @@ startBtn.addEventListener('click', () => {
     resetGame();
 });
 
+// Also launch on Enter key press inside the name input field
+const nameInputEl = document.getElementById('playerNameInput');
+if (nameInputEl) {
+    nameInputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            startBtn.click();
+        }
+    });
+}
+
 restartBtn.addEventListener('click', () => {
     initAudio();
     playBgMusic();
@@ -882,7 +891,7 @@ soundToggleBtn.addEventListener('click', () => {
         initAudio();
         // Restore slider to last non-zero value or default 80
         if (volumeSlider && parseInt(volumeSlider.value) === 0) {
-            volumeSlider.value = 80;
+            volumeSlider.value = 40;
         }
         if (bgMusic && volumeSlider) bgMusic.volume = parseInt(volumeSlider.value) / 100;
         playBgMusic();
