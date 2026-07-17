@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import emailjs from '@emailjs/browser';
 import { AnimationService } from '../core/services/animation.service';
+import { AnalyticsService } from '../core/services/analytics.service';
 
 @Component({
   selector: 'app-contact',
@@ -11,14 +12,16 @@ import { AnimationService } from '../core/services/animation.service';
   templateUrl: './contact.html',
   styleUrl: './contact.scss'
 })
-export class ContactComponent implements OnInit {
+export class ContactComponent implements OnInit, OnDestroy {
   phoneRevealed = false;
   showToast = false;
   toastMessage = '';
   private toastTimer: any;
+  private storageListener!: (e: StorageEvent) => void;
 
   constructor(
-    private animService: AnimationService
+    private animService: AnimationService,
+    private analyticsService: AnalyticsService
   ) {}
   formData = {
     name: '',
@@ -36,6 +39,33 @@ export class ContactComponent implements OnInit {
 
   ngOnInit() {
     emailjs.init('8BsZnzTftlZwoSaWS');
+
+    // Auto-reveal immediately if the user has already beaten the score
+    if (this.hasBeatenHighScore()) {
+      this.phoneRevealed = true;
+    }
+
+    // Listen for the game iframe writing a new high score to localStorage.
+    // The storage event fires in ALL windows of the same origin EXCEPT the
+    // writer — so the iframe's save triggers this handler in the parent page.
+    this.storageListener = (e: StorageEvent) => {
+      if (e.key === 'space_shooter_high_score' && e.newValue) {
+        // Log every score the user sets (their new personal best each game)
+        const score = parseInt(e.newValue, 10);
+        const eventLabel = this.hasBeatenHighScore() ? 'Beaten High Score' : 'Game Score';
+        this.analyticsService.logEvent(eventLabel, score);
+
+        // Only reveal the phone if they beat Yash's top score
+        if (this.hasBeatenHighScore()) {
+          this.phoneRevealed = true;
+        }
+      }
+    };
+    window.addEventListener('storage', this.storageListener);
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('storage', this.storageListener);
   }
 
   onSubmit() {
@@ -54,6 +84,7 @@ export class ContactComponent implements OnInit {
       .then((response) => {
         this.status.success = true;
         this.status.message = 'Message sent successfully!';
+        this.analyticsService.logEvent('Contact Form Sent', this.formData.name);
         this.resetForm();
         
         // Clear success message after 5 seconds so they can send another
@@ -84,7 +115,7 @@ export class ContactComponent implements OnInit {
   hasBeatenHighScore(): boolean {
     try {
       const score = localStorage.getItem('space_shooter_high_score');
-      return score ? parseInt(score, 10) > 2820 : false;
+      return score ? parseInt(score, 10) > 2990 : false;
     } catch (e) {
       return false;
     }
