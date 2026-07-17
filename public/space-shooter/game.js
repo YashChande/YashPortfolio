@@ -509,9 +509,9 @@ function drawHUD() {
 
 // Leaderboard Initialization & Management
 const DEFAULT_LEADERBOARD = [
-    { name: 'YASH', score: 2820, date: 1600000000000 },
-    { name: 'HOMELANDER', score: 2050, date: 1600000000001 },
-    { name: 'VOLDEMORT', score: 1620, date: 1600000000002 },
+    { name: 'YASH', score: 2990, date: 1600000000000 },
+    { name: 'HOMELANDER', score: 2450, date: 1600000000001 },
+    { name: 'VOLDEMORT', score: 1920, date: 1600000000002 },
     { name: 'THANOS', score: 710, date: 1600000000003 },
     { name: 'BLACK DOUG', score: 230, date: 1600000000004 }
 ];
@@ -526,8 +526,8 @@ function initLeaderboard() {
     if (stored) {
         try {
             leaderboard = JSON.parse(stored);
-            // Upgrade old default leaderboard to the new values
-            if (leaderboard.length > 0 && (leaderboard[0].score === 500 || leaderboard[0].score === 2450) && leaderboard[0].name === 'YASH') {
+            // Reset if leaderboard is using any old default Yash score (500, 2450, or 2820)
+            if (leaderboard.length > 0 && (leaderboard[0].score === 500 || leaderboard[0].score === 2450 || leaderboard[0].score === 2820) && leaderboard[0].name === 'YASH') {
                 leaderboard = [...DEFAULT_LEADERBOARD];
                 localStorage.setItem('space_shooter_leaderboard', JSON.stringify(leaderboard));
             }
