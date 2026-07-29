@@ -10,6 +10,8 @@ export class AnalyticsService {
   private maxScrollDepth: number = 0;
   private isBrowser: boolean;
   private hasLoggedClose: boolean = false;
+  private cachedGeo: any = null;
+  private cachedBattery: any = null;
 
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -39,16 +41,11 @@ export class AnalyticsService {
 
       const specs = this.getBrowserSpecs();
       
-      // Fetch battery status synchronously if cached, or skip to avoid blocking page close
       this.sendDataToSheet({
         ...specs,
-        actionType: 'Page Close',
-        batteryLevel: 'Closed',
-        batteryCharging: 'Closed',
-        ip: 'Closed',
-        country: 'Closed',
-        city: 'Closed',
-        isp: 'Closed'
+        ...(this.cachedBattery || {}),
+        ...(this.cachedGeo || {}),
+        actionType: 'Page Close'
       });
     };
 
@@ -71,27 +68,36 @@ export class AnalyticsService {
 
     // Battery status API
     const batteryPromise = (navigator as any).getBattery
-      ? (navigator as any).getBattery().then((b: any) => ({
-          batteryLevel: `${Math.round(b.level * 100)}%`,
-          batteryCharging: b.charging ? 'Yes' : 'No'
-        }))
+      ? (navigator as any).getBattery().then((b: any) => {
+          this.cachedBattery = {
+            batteryLevel: `${Math.round(b.level * 100)}%`,
+            batteryCharging: b.charging ? 'Yes' : 'No'
+          };
+          return this.cachedBattery;
+        })
       : Promise.resolve({ batteryLevel: 'Unknown', batteryCharging: 'Unknown' });
 
     // Geolocation IP lookup
     const geoPromise = fetch('https://ipapi.co/json/')
       .then(res => res.json())
+      .then(geo => {
+        this.cachedGeo = {
+          ip: geo.ip || 'Unknown',
+          country: geo.country_name || 'Unknown',
+          city: geo.city || 'Unknown',
+          isp: geo.org || 'Unknown',
+          timezone: geo.timezone || specs.timezone
+        };
+        return this.cachedGeo;
+      })
       .catch(() => ({}));
 
     Promise.all([batteryPromise, geoPromise]).then(([battery, geo]) => {
       this.sendDataToSheet({
         ...specs,
         ...battery,
-        actionType: 'Page Load',
-        ip: geo.ip || 'Unknown',
-        country: geo.country_name || 'Unknown',
-        city: geo.city || 'Unknown',
-        isp: geo.org || 'Unknown',
-        timezone: geo.timezone || specs.timezone
+        ...geo,
+        actionType: 'Page Load'
       });
     });
   }
@@ -103,6 +109,8 @@ export class AnalyticsService {
     const specs = this.getBrowserSpecs();
     this.sendDataToSheet({
       ...specs,
+      ...(this.cachedBattery || {}),
+      ...(this.cachedGeo || {}),
       actionType: `Event: ${eventName}`,
       score: detail.toString()
     });
