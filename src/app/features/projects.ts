@@ -56,6 +56,16 @@ export class ProjectsComponent implements AfterViewInit {
       link: null,
       buttonLabel: 'Play Now',
       isGame: true
+    },
+    {
+      title: 'AeroWeather',
+      category: 'Side Project',
+      image: 'assets/AeroWeather.png',
+      description: 'A full-stack app featuring a dynamic weather-reactive UI with custom CSS micro-animations based on real-time Open-Meteo API data.',
+      tags: ['Angular 17', '.NET 6', 'SQLite', 'Docker'],
+      link: 'https://yashchande.github.io/AeroWeather-/',
+      buttonLabel: 'Visit Deployed Site',
+      isGame: false
     }
   ];
 
