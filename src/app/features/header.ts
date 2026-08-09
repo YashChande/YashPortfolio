@@ -1,6 +1,7 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnimationService } from '../core/services/animation.service';
+import { GameWorldService } from '../core/services/game-world.service';
 
 @Component({
   selector: 'app-header',
@@ -22,9 +23,16 @@ export class HeaderComponent {
     { label: 'Contact', id: '#contact' }
   ];
 
+  readonly gameWorldService = inject(GameWorldService);
+
   constructor(
     private animService: AnimationService
   ) {}
+
+  toggleInteractiveMode() {
+    this.mobileMenuOpen = false;
+    this.gameWorldService.toggleInteractiveMode();
+  }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {

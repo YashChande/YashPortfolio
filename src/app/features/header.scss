@@ -130,6 +130,41 @@ header {
   gap: 1rem;
 }
 
+.btn-interactive-mode {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #00f0ff;
+  border: 1px solid rgba(112, 0, 255, 0.5);
+  background: linear-gradient(135deg, rgba(112, 0, 255, 0.2) 0%, rgba(0, 240, 255, 0.15) 100%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(112, 0, 255, 0.2);
+
+  .game-icon {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, rgba(112, 0, 255, 0.4) 0%, rgba(0, 240, 255, 0.3) 100%);
+    border-color: #00f0ff;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.4), 0 0 10px rgba(112, 0, 255, 0.6);
+    transform: translateY(-2px);
+  }
+
+  &.mobile-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+}
+
 .btn-resume {
   display: flex;
   align-items: center;
