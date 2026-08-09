@@ -9,10 +9,13 @@ import { ExperienceComponent } from './features/experience';
 import { ProjectsComponent } from './features/projects';
 import { ContactComponent } from './features/contact';
 import { FooterComponent } from './features/footer';
+import { GameWorldComponent } from './features/game-world/game-world';
 import { AnimationService } from './core/services/animation.service';
 import { ThreeService } from './core/services/three.service';
 import { GameService } from './core/services/game.service';
 import { AnalyticsService } from './core/services/analytics.service';
+
+import { GameWorldService } from './core/services/game-world.service';
 
 // Native game canvas dimensions
 const GAME_W = 950;
@@ -30,7 +33,8 @@ const GAME_H = 780;
     ExperienceComponent,
     ProjectsComponent,
     ContactComponent,
-    FooterComponent
+    FooterComponent,
+    GameWorldComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
@@ -48,6 +52,7 @@ export class App implements AfterViewInit {
     private animationService: AnimationService,
     private threeService: ThreeService,
     public gameService: GameService,
+    public gameWorldService: GameWorldService,
     private analyticsService: AnalyticsService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
