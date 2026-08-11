@@ -1,0 +1,181 @@
+<div class="game-world-overlay" [class.active]="gameWorldService.isInteractiveMode()">
+  <!-- Main Game Canvas (shared, exterior + interior) -->
+  <canvas #gameCanvas class="game-canvas"></canvas>
+
+  <!-- ═══════════ EXTERIOR CITY HUD ═══════════ -->
+  <ng-container *ngIf="!isInsideBuilding">
+    <!-- Top HUD Bar -->
+    <div class="hud-top-bar glass-panel">
+      <div class="hud-brand">
+        <span class="pulse-dot"></span>
+        <span class="hud-title">YC CITY &bull; INTERACTIVE MODE</span>
+      </div>
+
+      <div class="hud-controls-hint d-none-mobile" style="min-width:0;overflow:hidden;">
+        <span class="key-badge">WASD / Arrows</span> Move
+        <span class="divider">|</span>
+        <span class="key-badge">Walk into Door</span> Enter Building
+        <span class="divider">|</span>
+        <span class="key-badge" style="background: rgba(239, 68, 68, 0.3); border-color: #ef4444; color: #fca5a5;">L</span> Laser Beam 💥
+        <span class="divider">|</span>
+        <span class="key-badge">Drag</span> Orbit Camera
+      </div>
+
+      <button class="btn-exit-game" (click)="exitGameMode()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Exit Mode</span>
+      </button>
+    </div>
+
+    <!-- Door Interaction Prompt (Tap to Enter on Mobile) -->
+    <div class="interaction-prompt glass-panel"
+         *ngIf="gameWorldService.currentInteractionPrompt()"
+         (click)="onActionPress()">
+      <span class="prompt-key">🚪</span>
+      <span class="prompt-text">{{ gameWorldService.currentInteractionPrompt() }} (Tap to enter)</span>
+    </div>
+  </ng-container>
+
+  <!-- ═══════════ MOBILE TOUCH CONTROLS (Virtual Analog Joystick + Laser) ═══════════ -->
+  <div class="mobile-touch-controls">
+    <!-- Virtual Analog Joystick -->
+    <div class="virtual-joystick"
+         (touchstart)="onJoystickStart($event)"
+         (touchmove)="onJoystickMove($event)"
+         (touchend)="onJoystickEnd($event)"
+         (touchcancel)="onJoystickEnd($event)">
+      <div class="joystick-base">
+        <div class="joystick-knob" [style.transform]="joystickKnobTransform"></div>
+      </div>
+    </div>
+
+    <!-- Laser Action Button -->
+    <button class="btn-laser-mobile" *ngIf="!isInsideBuilding" (click)="fireHomelanderLaserBeam()">💥 LASER</button>
+  </div>
+
+  <!-- ═══════════ 5-STAR HOTEL INTERIOR HUD ═══════════ -->
+  <ng-container *ngIf="isInsideBuilding && enteredBuilding">
+
+    <!-- Interior Top Bar -->
+    <div class="hud-top-bar glass-panel interior-bar"
+         [style.border-color]="'rgba(' + hexToRgb(enteredBuilding.color) + ', 0.5)'">
+      <div class="hud-brand">
+        <span class="pulse-dot" [style.background]="enteredBuilding.color"
+              [style.box-shadow]="'0 0 10px ' + enteredBuilding.color"></span>
+        <span class="hud-title" [style.color]="enteredBuilding.color">
+          {{ enteredBuilding.name }}
+        </span>
+        <span class="hud-sub">({{ enteredBuilding.sub }})</span>
+      </div>
+
+      <div class="hud-controls-hint d-none-mobile" style="min-width:0;overflow:hidden;">
+        <span class="key-badge">WASD</span> Walk to Reception
+        <span class="divider">|</span>
+        <span class="key-badge">Hover / Tap</span> View Wall Frames
+        <span class="divider">|</span>
+        <span class="key-badge">Walk South to Exit Door</span> Exit
+      </div>
+
+      <button class="btn-exit-game" (click)="exitBuilding()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>Exit Building</span>
+      </button>
+    </div>
+
+    <!-- Guidance Prompt inside Hotel Lobby -->
+    <div class="hotel-reception-hint glass-panel" *ngIf="!hoveredFrameData">
+      <span class="hint-icon">🛎️</span>
+      <span class="hint-text">
+        {{ isNearReception ? 'Tap or hover over any 3D Picture Frame on the wall to view details' : 'Use D-Pad / WASD to walk forward towards Reception Desk (or walk South to Exit Door)' }}
+      </span>
+    </div>
+
+    <!-- 🌟 PICTURE FRAME DETAIL CARD — stays visible while hovered/tapped -->
+    <div class="picture-frame-hover-card glass-panel"
+         *ngIf="hoveredFrameData"
+         (mouseenter)="onCardMouseEnter()"
+         (mouseleave)="onCardMouseLeave()">
+
+      <button class="btn-close-card" (click)="hoveredFrameData = null" aria-label="Close details">&times;</button>
+
+      <div class="frame-card-header" [style.border-bottom-color]="hoveredFrameData.color">
+        <img *ngIf="hoveredFrameData.imageIcon" [src]="hoveredFrameData.imageIcon" class="frame-icon-img" alt="Logo" />
+        <span *ngIf="!hoveredFrameData.imageIcon" class="frame-icon">{{ hoveredFrameData.icon }}</span>
+        <div class="frame-titles">
+          <h2 [style.color]="hoveredFrameData.color">{{ hoveredFrameData.title }}</h2>
+          <span class="frame-sub">{{ hoveredFrameData.subtitle }}</span>
+        </div>
+      </div>
+
+      <div class="frame-card-body">
+        <p class="frame-desc">{{ hoveredFrameData.description }}</p>
+
+        <ul class="frame-details-list">
+          <li *ngFor="let item of hoveredFrameData.details" class="detail-row">
+            <!-- Rich DetailItem: logo thumbnail + text + optional inline View button -->
+            <ng-container *ngIf="isDetailItem(item)">
+              <img *ngIf="item.logo" [src]="item.logo" class="detail-logo" alt="logo" />
+              <span *ngIf="!item.logo" class="bullet-dot" [style.background]="hoveredFrameData.color"></span>
+              <span class="detail-text">{{ item.text }}</span>
+              <a *ngIf="item.link" [href]="item.link" target="_blank" rel="noopener"
+                 class="btn-inline-view" [style.border-color]="hoveredFrameData.color" [style.color]="hoveredFrameData.color"
+                 (click)="onFrameLinkClick($event, item.link)">
+                {{ item.linkText || 'View' }}
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </a>
+            </ng-container>
+            <!-- Plain string: colored bullet dot + text -->
+            <ng-container *ngIf="!isDetailItem(item)">
+              <span class="bullet-dot" [style.background]="hoveredFrameData.color"></span>
+              <span>{{ item }}</span>
+            </ng-container>
+          </li>
+        </ul>
+
+        <div class="frame-tags" *ngIf="hoveredFrameData.tags?.length">
+          <span *ngFor="let tag of hoveredFrameData.tags" class="frame-tag"
+                [style.border-color]="'rgba(' + hexToRgb(hoveredFrameData.color) + ', 0.4)'"
+                [style.color]="hoveredFrameData.color">
+            {{ tag }}
+          </span>
+        </div>
+
+        <div class="frame-actions" *ngIf="hoveredFrameData.link || hoveredFrameData.isMaintenance">
+          <!-- Disabled button for maintenance/down services -->
+          <ng-container *ngIf="hoveredFrameData.isMaintenance">
+            <button class="btn-frame-link disabled-btn" disabled>
+              <span>Visit Deployed Site</span>
+              <span class="server-down-badge">Server Down</span>
+            </button>
+          </ng-container>
+
+          <a *ngIf="!hoveredFrameData.isMaintenance && hoveredFrameData.link"
+             class="btn-frame-link"
+             [href]="hoveredFrameData.link.url"
+             (click)="onFrameLinkClick($event, hoveredFrameData.link.url)"
+             target="_blank" rel="noopener"
+             [style.background]="hoveredFrameData.color">
+            <span>{{ hoveredFrameData.link.label }}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+  </ng-container>
+
+</div>
