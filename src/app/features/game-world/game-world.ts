@@ -289,11 +289,12 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     const canvas = this.canvasRef?.nativeElement;
     if (!canvas) return;
 
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    const isMobile = window.innerWidth < 768;
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, powerPreference: 'high-performance' });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.0 : 1.5));
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.BasicShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.3;
 
@@ -333,7 +334,7 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     this.extScene.fog = new THREE.FogExp2('#7dd3fc', 0.00045);
 
     const aspect = window.innerWidth / window.innerHeight;
-    this.extCamera = new THREE.PerspectiveCamera(50, aspect, 0.1, 4000);
+    this.extCamera = new THREE.PerspectiveCamera(50, aspect, 0.1, 1500);
     this.updateExteriorCamera();
 
     const hemi = new THREE.HemisphereLight('#bae6fd', '#15803d', 1.6);
@@ -342,12 +343,12 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     const sun = new THREE.DirectionalLight('#fff7ed', 3.2);
     sun.position.set(100, 140, 80);
     sun.castShadow = true;
-    sun.shadow.mapSize.setScalar(2048);
+    sun.shadow.mapSize.setScalar(1024);
     sun.shadow.camera.near = 0.5;
-    sun.shadow.camera.far = 650;
-    sun.shadow.camera.left = sun.shadow.camera.bottom = -260;
-    sun.shadow.camera.right = sun.shadow.camera.top = 260;
-    sun.shadow.bias = -0.0005;
+    sun.shadow.camera.far = 500;
+    sun.shadow.camera.left = sun.shadow.camera.bottom = -200;
+    sun.shadow.camera.right = sun.shadow.camera.top = 200;
+    sun.shadow.bias = -0.001;
     this.extScene.add(sun);
 
     this.buildNatureEnvironment();
@@ -378,9 +379,9 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     ocean.position.set(0, -0.4, 0);
     this.extScene.add(ocean);
 
-    // Visible 3D Grass Blades (Clusters of green blades scattered on ground)
-    const bladeMat = new THREE.MeshStandardMaterial({ color: '#65a30d', roughness: 0.7 });
-    for (let g = 0; g < 180; g++) {
+    // Visible 3D Grass Blades (reduced to 60 tufts with MeshBasicMaterial for performance)
+    const bladeMat = new THREE.MeshBasicMaterial({ color: '#65a30d' });
+    for (let g = 0; g < 60; g++) {
       const a = Math.random() * Math.PI * 2;
       const r = 30 + Math.random() * 220;
       const gx = Math.sin(a) * r;
@@ -391,7 +392,7 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       const tuft = new THREE.Group();
       tuft.position.set(gx, 0, gz);
 
-      for (let b = 0; b < 5; b++) {
+      for (let b = 0; b < 3; b++) {
         const blade = new THREE.Mesh(new THREE.ConeGeometry(0.18, 1.2 + Math.random() * 0.6, 4), bladeMat);
         blade.position.set((Math.random() - 0.5) * 0.6, 0.6, (Math.random() - 0.5) * 0.6);
         blade.rotation.z = (Math.random() - 0.5) * 0.3;
@@ -401,7 +402,7 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     }
 
     const sandMat = new THREE.MeshStandardMaterial({ color: '#d97706', roughness: 0.9 });
-    for (let a = 0; a < Math.PI * 2; a += 0.12) {
+    for (let a = 0; a < Math.PI * 2; a += 0.18) {
       const r = 265 + Math.random() * 15;
       const sw = new THREE.Mesh(new THREE.BoxGeometry(25 + Math.random() * 10, 1.2, 25 + Math.random() * 10), sandMat);
       sw.position.set(Math.sin(a) * r, -0.2, Math.cos(a) * r);
@@ -418,21 +419,21 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
 
     const placeMountain = (x: number, z: number, h: number, r: number) => {
       const mat = rockMats[Math.floor(Math.random() * rockMats.length)];
-      const cone = new THREE.Mesh(new THREE.ConeGeometry(r, h, 10), mat);
+      const cone = new THREE.Mesh(new THREE.ConeGeometry(r, h, 7), mat);
       cone.position.set(x, h / 2, z);
       cone.castShadow = true;
       this.extScene.add(cone);
 
       if (h > 45) {
-        const cap = new THREE.Mesh(new THREE.ConeGeometry(r * 0.42, h * 0.25, 10), snowMat);
+        const cap = new THREE.Mesh(new THREE.ConeGeometry(r * 0.42, h * 0.25, 7), snowMat);
         cap.position.set(x, h * 0.84, z);
         this.extScene.add(cap);
       }
     };
 
-    // Mountain Ring Encircling Island
-    for (let i = 0; i < 72; i++) {
-      const a = (i / 72) * Math.PI * 2 + (Math.random() - 0.5) * 0.2;
+    // Mountain Ring — reduced from 72 to 42 peaks
+    for (let i = 0; i < 42; i++) {
+      const a = (i / 42) * Math.PI * 2 + (Math.random() - 0.5) * 0.2;
       const r = 275 + Math.random() * 60;
       const h = 45 + Math.random() * 85;
       const rad = 25 + Math.random() * 40;
@@ -440,10 +441,10 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     }
 
     const trunkMat = new THREE.MeshStandardMaterial({ color: '#451a03', roughness: 0.9 });
-    const foliageMat = new THREE.MeshStandardMaterial({ color: '#15803d', roughness: 0.7 });
+    const foliageMat = new THREE.MeshBasicMaterial({ color: '#15803d' });
 
     this.treeData = [];
-    for (let t = 0; t < 150; t++) {
+    for (let t = 0; t < 70; t++) {
       const a = Math.random() * Math.PI * 2;
       const r = 40 + Math.random() * 240;
       const cx = Math.sin(a) * r;
@@ -460,16 +461,15 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       const tg = new THREE.Group();
       tg.position.set(cx, 0, cz);
 
-      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 4, 8), trunkMat.clone());
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 4, 6), trunkMat);
       trunk.position.y = 2;
       trunk.castShadow = true;
       tg.add(trunk);
 
       const foliageArr: THREE.Mesh[] = [];
-      for (let l = 0; l < 3; l++) {
-        const cone = new THREE.Mesh(new THREE.ConeGeometry(3.2 - l * 0.6, 4, 8), foliageMat.clone());
+      for (let l = 0; l < 2; l++) {
+        const cone = new THREE.Mesh(new THREE.ConeGeometry(3.2 - l * 0.6, 4, 6), foliageMat);
         cone.position.y = 4 + l * 2;
-        cone.castShadow = true;
         tg.add(cone);
         foliageArr.push(cone);
       }
@@ -478,22 +478,22 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // ─── Floating Volumetric Sky Clouds ───────────────────────────
+  // ─── Floating Sky Clouds (lightweight, MeshBasicMaterial) ─────
   private buildFloatingSkyClouds(): void {
-    const cloudMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.9, transparent: true, opacity: 0.88 });
+    const cloudMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
     this.clouds = [];
 
-    for (let c = 0; c < 16; c++) {
+    for (let c = 0; c < 8; c++) {
       const cloudGroup = new THREE.Group();
       const cx = (Math.random() - 0.5) * 400;
       const cy = 60 + Math.random() * 30;
       const cz = (Math.random() - 0.5) * 400;
       cloudGroup.position.set(cx, cy, cz);
 
-      const count = 5 + Math.floor(Math.random() * 4);
+      const count = 3 + Math.floor(Math.random() * 3);
       for (let i = 0; i < count; i++) {
         const size = 12 + Math.random() * 14;
-        const sphere = new THREE.Mesh(new THREE.SphereGeometry(size, 10, 10), cloudMat);
+        const sphere = new THREE.Mesh(new THREE.SphereGeometry(size, 5, 5), cloudMat);
         sphere.position.set(i * 10 - 20, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 6);
         cloudGroup.add(sphere);
       }
@@ -502,6 +502,8 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       this.clouds.push(cloudGroup);
     }
   }
+
+
 
   private buildSpaciousCityRoads(): void {
     const aspMat = new THREE.MeshStandardMaterial({ color: '#1f2937', roughness: 0.7 });
@@ -686,13 +688,9 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
 
       // Dual Headlights
       [-1.3, 1.3].forEach(hx => {
-        const hl = new THREE.Mesh(new THREE.SphereGeometry(0.25, 10, 10), headMat);
+        const hl = new THREE.Mesh(new THREE.SphereGeometry(0.25, 6, 6), headMat);
         hl.position.set(hx, 0.6, 3.4);
         carGroup.add(hl);
-
-        const hLight = new THREE.PointLight('#fef08a', 2.0, 10);
-        hLight.position.set(hx, 0.6, 3.6);
-        carGroup.add(hLight);
       });
 
       // 4 Sports Alloy Wheels
@@ -738,7 +736,7 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       bulb.position.set(1.4, 8.6, 0); g.add(bulb);
 
       const light = new THREE.PointLight('#fef3c7', 2.8, 24);
-      light.position.set(1.4, 8.2, 0); light.castShadow = true; g.add(light);
+      light.position.set(1.4, 8.2, 0); g.add(light);
 
       this.extScene.add(g);
     });
@@ -875,7 +873,6 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
 
     const chandelierLight = new THREE.PointLight('#fef9c3', 7.0, 80);
     chandelierLight.position.set(0, 15, 0);
-    chandelierLight.castShadow = true;
     this.intScene.add(chandelierLight);
 
     const receptionSpot = new THREE.SpotLight('#fbbf24', 6.0, 50, Math.PI / 3, 0.3);
