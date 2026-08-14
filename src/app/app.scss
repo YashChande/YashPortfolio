@@ -120,6 +120,97 @@ app-header {
   z-index: 1000;
 }
 
+// ☁️ CLASH OF CLANS DYNAMIC CLOUD TRANSITION OVERLAY ☁️
+.coc-cloud-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999999 !important;
+  pointer-events: none;
+  overflow: hidden;
+
+  .cloud-curtain {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 62vw;
+    height: 100vh;
+    will-change: transform;
+    transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+
+    &.curtain-left {
+      left: 0;
+      transform: translateX(-110%);
+
+      .curtain-base {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 65%, #e2e8f0 100%);
+        box-shadow: 20px 0 60px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    &.curtain-right {
+      right: 0;
+      transform: translateX(110%);
+
+      .curtain-base {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(-135deg, #ffffff 0%, #f1f5f9 65%, #e2e8f0 100%);
+        box-shadow: -20px 0 60px rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+
+  .cloud-puff {
+    position: absolute;
+    background: radial-gradient(circle at 35% 35%, #ffffff 45%, #f1f5f9 80%, #cbd5e1 100%);
+    border-radius: 50%;
+    box-shadow: inset -15px -15px 40px rgba(148, 163, 184, 0.35), 0 20px 50px rgba(0, 0, 0, 0.25);
+  }
+
+  .curtain-left {
+    .puff-l1 { width: 400px; height: 400px; top: -90px; right: -200px; }
+    .puff-l2 { width: 520px; height: 520px; top: 10%; right: -260px; }
+    .puff-l3 { width: 460px; height: 460px; top: 36%; right: -230px; }
+    .puff-l4 { width: 540px; height: 540px; top: 60%; right: -270px; }
+    .puff-l5 { width: 440px; height: 440px; bottom: -110px; right: -220px; }
+    .puff-l6 { width: 340px; height: 340px; top: 26%; right: -150px; }
+    .puff-l7 { width: 380px; height: 380px; top: 76%; right: -180px; }
+  }
+
+  .curtain-right {
+    .puff-r1 { width: 420px; height: 420px; top: -80px; left: -210px; }
+    .puff-r2 { width: 500px; height: 500px; top: 14%; left: -250px; }
+    .puff-r3 { width: 480px; height: 480px; top: 40%; left: -240px; }
+    .puff-r4 { width: 560px; height: 560px; top: 64%; left: -280px; }
+    .puff-r5 { width: 420px; height: 420px; bottom: -100px; left: -210px; }
+    .puff-r6 { width: 360px; height: 360px; top: 24%; left: -160px; }
+    .puff-r7 { width: 370px; height: 370px; top: 80%; left: -170px; }
+  }
+
+  &.covering {
+    .curtain-left {
+      transform: translateX(4vw);
+    }
+    .curtain-right {
+      transform: translateX(-4vw);
+    }
+  }
+
+  &.uncovering {
+    .curtain-left {
+      transform: translateX(-110%);
+    }
+    .curtain-right {
+      transform: translateX(110%);
+    }
+  }
+}
+
 app-footer, main {
   position: relative;
   z-index: 10;
