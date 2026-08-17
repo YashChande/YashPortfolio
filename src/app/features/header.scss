@@ -144,9 +144,29 @@ header {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 0 10px rgba(112, 0, 255, 0.2);
+  white-space: nowrap;
 
   .game-icon {
-    font-size: 1rem;
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  // Desktop: show "Interactive Mode", hide "Mode"
+  .label-full { display: inline; }
+  .label-short { display: none; }
+
+  // Mobile: centered absolutely in nav bar
+  @media (max-width: 768px) {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.45rem 0.85rem;
+    gap: 0.35rem;
+    border-radius: 14px;
+    margin-left: 0;
+
+    .label-full { display: none; }
+    .label-short { display: inline; }
   }
 
   &:hover {
@@ -162,6 +182,9 @@ header {
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
     margin-top: 1rem;
+
+    .label-full { display: inline; }
+    .label-short { display: none; }
   }
 }
 
@@ -183,6 +206,22 @@ header {
 
   svg {
     transition: transform 0.3s ease;
+  }
+
+  // Mobile: invisible but tappable
+  @media (max-width: 768px) {
+    opacity: 0;
+    pointer-events: auto;
+    padding: 0.45rem 0.55rem;
+    gap: 0;
+    border-radius: 12px;
+
+    span { display: none; }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   &:hover {

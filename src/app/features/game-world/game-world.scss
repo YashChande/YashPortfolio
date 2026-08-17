@@ -51,6 +51,14 @@
   &.interior-bar {
     border-color: rgba(100, 200, 255, 0.3);
   }
+
+  @media (max-width: 768px) {
+    top: 10px;
+    width: calc(100% - 20px);
+    padding: 8px 12px;
+    gap: 8px;
+    border-radius: 12px;
+  }
 }
 
 .hud-brand {
@@ -58,6 +66,13 @@
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    gap: 6px;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
 }
 
 .pulse-dot {
@@ -75,12 +90,24 @@
   letter-spacing: 1px;
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
+
+  @media (max-width: 768px) {
+    font-size: .76rem;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .hud-sub {
   font-size: .8rem;
   color: #94a3b8;
   margin-left: 4px;
+
+  @media (max-width: 540px) {
+    display: none;
+  }
 }
 
 .hud-controls-hint {
@@ -122,6 +149,20 @@
   font-size: .82rem;
   transition: all .2s ease;
   white-space: nowrap;
+
+  .exit-label-extra {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    gap: 4px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
 
   &:hover {
     background: rgba(239,68,68,.3);
@@ -212,9 +253,17 @@
     margin-bottom: 14px;
     backdrop-filter: blur(10px);
     pointer-events: auto;
-    touch-action: manipulation;
+    touch-action: none;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+
+    &:active {
+      transform: scale(0.92);
+      background: linear-gradient(135deg, #ff2222 0%, #dc2626 100%);
+      box-shadow: 0 0 26px rgba(239, 68, 68, 0.95), 0 0 45px rgba(255, 0, 0, 0.8);
+    }
   }
 
   /* 🕹️ Virtual Analog Joystick */

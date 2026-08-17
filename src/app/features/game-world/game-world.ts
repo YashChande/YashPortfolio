@@ -262,8 +262,8 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       this.enterBuilding(this.nearbyBuilding);
     }
 
-    if ((e.code === 'KeyL' || e.key === 'l' || e.key === 'L') && !this.isInsideBuilding) {
-      this.fireHomelanderLaserBeam();
+    if ((e.code === 'KeyL' || e.key === 'l' || e.key === 'L') && !this.isInsideBuilding && !e.repeat) {
+      this.startContinuousLaser();
     }
     if (e.code === 'Escape') {
       if (this.isInsideBuilding) {
@@ -279,6 +279,10 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     if (!this.gameWorldService.isInteractiveMode()) return;
     this.keys[e.code.toLowerCase()] = false;
     this.keys[e.key.toLowerCase()] = false;
+
+    if (e.code === 'KeyL' || e.key === 'l' || e.key === 'L') {
+      this.stopContinuousLaser();
+    }
   }
 
   @HostListener('window:pointerdown', ['$event'])
@@ -346,11 +350,13 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     this.renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: !isMobile && !isLowEnd,
-      powerPreference: 'high-performance'
+      powerPreference: 'high-performance',
+      precision: isMobile ? 'mediump' : 'highp'
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.currentDpr));
-    this.renderer.shadowMap.enabled = true;
+    // Disable shadow maps on mobile phones for maximum 60+ FPS smoothness!
+    this.renderer.shadowMap.enabled = !isMobile;
     this.renderer.shadowMap.type = THREE.BasicShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.3;
@@ -420,6 +426,7 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
   }
 
   private destroy(): void {
+    this.stopContinuousLaser();
     if (this.animId) {
       cancelAnimationFrame(this.animId);
       this.animId = null;
@@ -2154,11 +2161,42 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       }, 30);
     }
 
-    // Clean up laser beam after 350ms
+    // Snappy laser pulse duration (140ms) for ultra-responsive rapid-fire
     setTimeout(() => {
       if (this.laserGroupPool) this.laserGroupPool.visible = false;
       this.isShootingLaser = false;
-    }, 350);
+    }, 140);
+  }
+
+  // 💥 CONTINUOUS RAPID-FIRE LASER (Long-Press / Hold Handler)
+  private laserIntervalId: any = null;
+
+  startContinuousLaser(e?: Event): void {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (this.isInsideBuilding || !this.gameWorldService.isInteractiveMode()) return;
+    this.fireHomelanderLaserBeam();
+
+    if (this.laserIntervalId) clearInterval(this.laserIntervalId);
+    this.laserIntervalId = setInterval(() => {
+      if (!this.gameWorldService.isInteractiveMode() || this.isInsideBuilding) {
+        this.stopContinuousLaser();
+        return;
+      }
+      this.fireHomelanderLaserBeam();
+    }, 180);
+  }
+
+  stopContinuousLaser(e?: Event): void {
+    if (e) {
+      e.preventDefault();
+    }
+    if (this.laserIntervalId) {
+      clearInterval(this.laserIntervalId);
+      this.laserIntervalId = null;
+    }
   }
 
   // 💥 ZERO-ALLOCATION EXPLOSION (Pool based, 0ms GC pause)
