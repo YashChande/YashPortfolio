@@ -183,6 +183,35 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
   private joystickOrigin = { x: 0, y: 0 };
   private readonly maxJoystickRadius = 38;
 
+  // 🚀 Performance & Dynamic Quality Scaling (DRS)
+  private isPrewarmed = false;
+  private currentDpr = 1.25;
+  private minDpr = 0.85;
+  private maxDpr = 1.5;
+  private fpsFrameCount = 0;
+  private fpsLastSample = performance.now();
+
+  // 💥 Pooled Laser & Explosion Meshes (Zero garbage collection pauses)
+  private particlePool: {
+    mesh: THREE.Mesh;
+    vx: number;
+    vy: number;
+    vz: number;
+    life: number;
+    maxLife: number;
+    scale: number;
+    type: 'fire' | 'smoke' | 'debris';
+    rotV?: THREE.Vector3;
+    active: boolean;
+  }[] = [];
+  private laserGroupPool: THREE.Group | null = null;
+  private leftBeamMesh: THREE.Mesh | null = null;
+  private rightBeamMesh: THREE.Mesh | null = null;
+  private leftBeamCore: THREE.Mesh | null = null;
+  private rightBeamCore: THREE.Mesh | null = null;
+  private impactLightPool: THREE.PointLight | null = null;
+  private burnMarkPool: THREE.Mesh | null = null;
+
   constructor() {
     effect(() => {
       const active = this.gameWorldService.isInteractiveMode();
@@ -195,10 +224,20 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (this.gameWorldService.isInteractiveMode()) this.boot();
+    // ⚡ PRE-WARM WebGL scene and compile GPU shaders during idle browser time
+    if (typeof window !== 'undefined') {
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(() => this.prewarmEngine());
+      } else {
+        setTimeout(() => this.prewarmEngine(), 1000);
+      }
+    }
   }
 
-  ngOnDestroy(): void { this.destroy(); }
+  ngOnDestroy(): void {
+    if (this.animId) cancelAnimationFrame(this.animId);
+    this.renderer?.dispose();
+  }
 
   hexToRgb(hex: string): string {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -226,8 +265,12 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     if ((e.code === 'KeyL' || e.key === 'l' || e.key === 'L') && !this.isInsideBuilding) {
       this.fireHomelanderLaserBeam();
     }
-    if (e.code === 'Escape' && this.isInsideBuilding) {
-      this.exitBuilding();
+    if (e.code === 'Escape') {
+      if (this.isInsideBuilding) {
+        this.exitBuilding();
+      } else {
+        this.exitGameMode();
+      }
     }
   }
 
@@ -283,16 +326,30 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
   }
 
   // ══════════════════════════════════════════════════════════════
-  //  BOOT ENGINE
+  //  ⚡ BACKGROUND SHADER PRE-WARMING & ENGINE BOOT
   // ══════════════════════════════════════════════════════════════
-  private boot(): void {
+  private prewarmEngine(): void {
+    if (this.isPrewarmed) return;
     const canvas = this.canvasRef?.nativeElement;
     if (!canvas) return;
 
-    const isMobile = window.innerWidth < 768;
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, powerPreference: 'high-performance' });
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const isLowEnd = typeof navigator !== 'undefined' && (
+      (navigator.hardwareConcurrency || 4) <= 4 ||
+      ((navigator as any).deviceMemory || 4) <= 4
+    );
+
+    this.currentDpr = isMobile ? 1.0 : (isLowEnd ? 1.15 : 1.35);
+    this.maxDpr = isMobile ? 1.0 : 1.5;
+    this.minDpr = isMobile ? 0.75 : 0.85;
+
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: !isMobile && !isLowEnd,
+      powerPreference: 'high-performance'
+    });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.0 : 1.5));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.currentDpr));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.BasicShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -300,12 +357,53 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
 
     this.buildExteriorScene();
     this.buildHotelInteriorScene();
+    this.initPooledLaserAndParticles();
+
+    // ⚡ Pre-compile GPU shaders so first click has ZERO lag
+    try {
+      this.renderer.compile(this.extScene, this.extCamera);
+      this.renderer.compile(this.intScene, this.intCamera);
+    } catch {
+      // Safe fallback if WebGL context isn't ready
+    }
+
+    this.isPrewarmed = true;
+  }
+
+  private boot(): void {
+    if (!this.isPrewarmed) {
+      this.prewarmEngine();
+    }
+    if (!this.renderer) return;
+
+    this.onResize();
 
     let last = performance.now();
+    this.fpsLastSample = last;
+    this.fpsFrameCount = 0;
+
     const loop = (now: number) => {
       if (!this.gameWorldService.isInteractiveMode()) return;
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
+
+      // 🎛️ Dynamic Resolution Scaling (DRS)
+      this.fpsFrameCount++;
+      if (this.fpsFrameCount >= 30) {
+        const elapsed = (now - this.fpsLastSample) / 1000;
+        const avgFps = this.fpsFrameCount / (elapsed || 0.001);
+        this.fpsFrameCount = 0;
+        this.fpsLastSample = now;
+
+        // Auto-scale DPR up/down dynamically
+        if (avgFps < 48 && this.currentDpr > this.minDpr) {
+          this.currentDpr = Math.max(this.minDpr, this.currentDpr - 0.1);
+          this.renderer.setPixelRatio(this.currentDpr);
+        } else if (avgFps > 58 && this.currentDpr < this.maxDpr) {
+          this.currentDpr = Math.min(this.maxDpr, this.currentDpr + 0.05);
+          this.renderer.setPixelRatio(this.currentDpr);
+        }
+      }
 
       if (this.isInsideBuilding) {
         this.tickHotelInterior(dt);
@@ -316,13 +414,17 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       }
       this.animId = requestAnimationFrame(loop);
     };
+
     if (this.animId) cancelAnimationFrame(this.animId);
     this.animId = requestAnimationFrame(loop);
   }
 
   private destroy(): void {
-    if (this.animId) { cancelAnimationFrame(this.animId); this.animId = null; }
-    this.renderer?.dispose();
+    if (this.animId) {
+      cancelAnimationFrame(this.animId);
+      this.animId = null;
+    }
+    // Renderer & scenes are kept pre-warmed in memory for instant 0ms reopening
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -1875,8 +1977,87 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
   }
 
   // ══════════════════════════════════════════════════════════════
-  // 💥 HOMELANDER EYE LASER BEAM & TREE EXPLOSION SYSTEM
+  // 💥 POOLED LASER BEAM & EXPLOSION ENGINE (Zero Garbage Collection)
   // ══════════════════════════════════════════════════════════════
+  private initPooledLaserAndParticles(): void {
+    // 1. Reusable Laser Beam Group
+    this.laserGroupPool = new THREE.Group();
+    this.laserGroupPool.visible = false;
+
+    const outerMat = new THREE.MeshBasicMaterial({ color: '#ef4444' });
+    const innerMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
+    const cylGeo = new THREE.CylinderGeometry(0.14, 0.14, 1, 6);
+    const coreGeo = new THREE.CylinderGeometry(0.06, 0.06, 1, 6);
+
+    this.leftBeamMesh = new THREE.Mesh(cylGeo, outerMat);
+    this.leftBeamCore = new THREE.Mesh(coreGeo, innerMat);
+    this.rightBeamMesh = new THREE.Mesh(cylGeo, outerMat);
+    this.rightBeamCore = new THREE.Mesh(coreGeo, innerMat);
+
+    this.impactLightPool = new THREE.PointLight('#ff0000', 8.0, 30);
+
+    this.laserGroupPool.add(
+      this.leftBeamMesh, this.leftBeamCore,
+      this.rightBeamMesh, this.rightBeamCore,
+      this.impactLightPool
+    );
+    this.extScene.add(this.laserGroupPool);
+
+    // 2. Pre-allocated Particle Pool (18 Fire, 10 Smoke, 8 Debris)
+    this.particlePool = [];
+    const fireGeo = new THREE.SphereGeometry(0.5, 4, 4);
+    const smokeGeo = new THREE.SphereGeometry(0.6, 4, 4);
+    const boxGeo = new THREE.BoxGeometry(0.4, 0.4, 0.4);
+
+    const fireColors = ['#ff4400', '#ff8800', '#ffcc00'];
+
+    for (let i = 0; i < 18; i++) {
+      const mat = new THREE.MeshBasicMaterial({ color: fireColors[i % 3], transparent: true, opacity: 1.0 });
+      const mesh = new THREE.Mesh(fireGeo, mat);
+      mesh.visible = false;
+      this.extScene.add(mesh);
+      this.particlePool.push({
+        mesh, vx: 0, vy: 0, vz: 0, life: 0, maxLife: 0.5, scale: 0.5, type: 'fire', active: false
+      });
+    }
+
+    for (let i = 0; i < 10; i++) {
+      const mat = new THREE.MeshBasicMaterial({ color: '#555555', transparent: true, opacity: 0.55 });
+      const mesh = new THREE.Mesh(smokeGeo, mat);
+      mesh.visible = false;
+      this.extScene.add(mesh);
+      this.particlePool.push({
+        mesh, vx: 0, vy: 0, vz: 0, life: 0, maxLife: 1.0, scale: 0.6, type: 'smoke', active: false
+      });
+    }
+
+    const woodMat = new THREE.MeshBasicMaterial({ color: '#3a1000' });
+    for (let i = 0; i < 8; i++) {
+      const mesh = new THREE.Mesh(boxGeo, woodMat);
+      mesh.visible = false;
+      this.extScene.add(mesh);
+      this.particlePool.push({
+        mesh, vx: 0, vy: 0, vz: 0, life: 0, maxLife: 0.8, scale: 0.4, type: 'debris',
+        rotV: new THREE.Vector3(8, 8, 8), active: false
+      });
+    }
+  }
+
+  private updateBeamMesh(start: THREE.Vector3, end: THREE.Vector3, beam: THREE.Mesh | null, core: THREE.Mesh | null): void {
+    if (!beam || !core) return;
+    const dir = new THREE.Vector3().subVectors(end, start);
+    const len = dir.length();
+    const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+
+    beam.position.copy(mid);
+    beam.scale.set(1, len, 1);
+    beam.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+
+    core.position.copy(mid);
+    core.scale.set(1, len, 1);
+    core.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+  }
+
   fireHomelanderLaserBeam(): void {
     if (this.isShootingLaser || this.isInsideBuilding) return;
 
@@ -1919,7 +2100,7 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     if (this.playerGroup) this.playerGroup.rotation.y = angleToTarget;
 
     this.isShootingLaser = true;
-    this.cameraShakeTimer = 0.55;
+    this.cameraShakeTimer = 0.4;
 
     // Eye Origin Positions in World Space
     const eyeY = 3.3;
@@ -1940,42 +2121,15 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
 
     const targetVec = new THREE.Vector3(tx, ty, tz);
 
-    // Create 3D Laser Beam Group
-    const laserGroup = new THREE.Group();
+    // Update pooled laser group
+    if (this.laserGroupPool) {
+      this.updateBeamMesh(leftEyeWorld, targetVec, this.leftBeamMesh, this.leftBeamCore);
+      this.updateBeamMesh(rightEyeWorld, targetVec, this.rightBeamMesh, this.rightBeamCore);
+      if (this.impactLightPool) this.impactLightPool.position.copy(targetVec);
+      this.laserGroupPool.visible = true;
+    }
 
-    const createBeam = (start: THREE.Vector3, end: THREE.Vector3) => {
-      const dir = new THREE.Vector3().subVectors(end, start);
-      const len = dir.length();
-      const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-
-      // Outer Red Glow Cylinder
-      const outerMat = new THREE.MeshBasicMaterial({ color: '#ef4444' });
-      const outerGeo = new THREE.CylinderGeometry(0.14, 0.14, len, 8);
-      const outerMesh = new THREE.Mesh(outerGeo, outerMat);
-      outerMesh.position.copy(mid);
-      outerMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
-      laserGroup.add(outerMesh);
-
-      // Inner White Hot Core Cylinder
-      const innerMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
-      const innerGeo = new THREE.CylinderGeometry(0.06, 0.06, len, 8);
-      const innerMesh = new THREE.Mesh(innerGeo, innerMat);
-      innerMesh.position.copy(mid);
-      innerMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
-      laserGroup.add(innerMesh);
-    };
-
-    createBeam(leftEyeWorld, targetVec);
-    createBeam(rightEyeWorld, targetVec);
-
-    // Intense Red Impact Light
-    const impactLight = new THREE.PointLight('#ff0000', 14.0, 50);
-    impactLight.position.copy(targetVec);
-    laserGroup.add(impactLight);
-
-    this.extScene.add(laserGroup);
-
-    // Trigger Explosive Fire, Smoke & Debris Particles
+    // Trigger Explosive Fire, Smoke & Debris Particles from Pool
     this.spawnExplosionParticles(tx, ty, tz);
 
     // Animate Tree Destruction
@@ -1986,17 +2140,10 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       // Char the trunk to black wood
       (trunkMesh.material as THREE.MeshStandardMaterial).color.set('#1c1917');
 
-      // Burn mark on ground
-      const burnMat = new THREE.MeshBasicMaterial({ color: '#09090b', transparent: true, opacity: 0.85 });
-      const burnMark = new THREE.Mesh(new THREE.CircleGeometry(4.0, 16), burnMat);
-      burnMark.rotation.x = -Math.PI / 2;
-      burnMark.position.set(tx, 0.05, tz);
-      this.extScene.add(burnMark);
-
       // Shrink foliage over time
       let scaleProgress = 1.0;
       const shrinkInterval = setInterval(() => {
-        scaleProgress -= 0.15;
+        scaleProgress -= 0.2;
         if (scaleProgress <= 0.05) {
           scaleProgress = 0.05;
           foliageList.forEach(f => (f.visible = false));
@@ -2007,73 +2154,82 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       }, 30);
     }
 
-    // Clean up laser beam after 400ms
+    // Clean up laser beam after 350ms
     setTimeout(() => {
-      this.extScene.remove(laserGroup);
+      if (this.laserGroupPool) this.laserGroupPool.visible = false;
       this.isShootingLaser = false;
-    }, 400);
+    }, 350);
   }
 
-  // 💥 MINIMAL EXPLOSION (ultra-lightweight, no lag)
+  // 💥 ZERO-ALLOCATION EXPLOSION (Pool based, 0ms GC pause)
   private spawnExplosionParticles(x: number, y: number, z: number): void {
-    const fireGeo  = new THREE.SphereGeometry(0.5, 4, 4);
-    const smokeGeo = new THREE.SphereGeometry(0.6, 4, 4);
-    const boxGeo   = new THREE.BoxGeometry(0.4, 0.4, 0.4);
-
-    const fireColors = ['#ff4400', '#ff8800', '#ffcc00'];
-
     // 6 fire sparks
-    for (let i = 0; i < 6; i++) {
-      const mat = new THREE.MeshBasicMaterial({ color: fireColors[i % 3], transparent: true, opacity: 1.0 });
-      const p = new THREE.Mesh(fireGeo, mat);
-      p.position.set(x, y + 0.5, z);
-      this.extScene.add(p);
-      const theta = (i / 6) * Math.PI * 2;
-      const speed = 6 + Math.random() * 8;
-      this.activeParticles.push({
-        mesh: p,
-        vx: Math.cos(theta) * speed,
-        vy: 5 + Math.random() * 6,
-        vz: Math.sin(theta) * speed,
-        life: 0.5, maxLife: 0.5,
-        scale: 0.5, color: new THREE.Color(fireColors[i % 3])
-      });
+    let fireCount = 0;
+    for (const p of this.particlePool) {
+      if (p.type === 'fire' && !p.active) {
+        p.active = true;
+        p.life = 0.5;
+        p.maxLife = 0.5;
+        p.scale = 0.5;
+        p.mesh.position.set(x, y + 0.5, z);
+        p.mesh.scale.set(0.5, 0.5, 0.5);
+        (p.mesh.material as THREE.MeshBasicMaterial).opacity = 1.0;
+        p.mesh.visible = true;
+
+        const theta = (fireCount / 6) * Math.PI * 2;
+        const speed = 6 + Math.random() * 8;
+        p.vx = Math.cos(theta) * speed;
+        p.vy = 5 + Math.random() * 6;
+        p.vz = Math.sin(theta) * speed;
+
+        fireCount++;
+        if (fireCount >= 6) break;
+      }
     }
 
     // 4 smoke puffs
-    const smokeMat = new THREE.MeshBasicMaterial({ color: '#555555', transparent: true, opacity: 0.55 });
-    for (let i = 0; i < 4; i++) {
-      const p = new THREE.Mesh(smokeGeo, smokeMat.clone());
-      const ang = (i / 4) * Math.PI * 2;
-      p.position.set(x + Math.cos(ang), y + 1, z + Math.sin(ang));
-      this.extScene.add(p);
-      this.activeParticles.push({
-        mesh: p,
-        vx: Math.cos(ang) * 1.5,
-        vy: 2 + Math.random() * 2,
-        vz: Math.sin(ang) * 1.5,
-        life: 1.0, maxLife: 1.0,
-        scale: 0.6, color: new THREE.Color('#555555'), isSmoke: true
-      });
+    let smokeCount = 0;
+    for (const p of this.particlePool) {
+      if (p.type === 'smoke' && !p.active) {
+        p.active = true;
+        p.life = 1.0;
+        p.maxLife = 1.0;
+        p.scale = 0.6;
+        const ang = (smokeCount / 4) * Math.PI * 2;
+        p.mesh.position.set(x + Math.cos(ang), y + 1, z + Math.sin(ang));
+        p.mesh.scale.set(0.6, 0.6, 0.6);
+        (p.mesh.material as THREE.MeshBasicMaterial).opacity = 0.55;
+        p.mesh.visible = true;
+
+        p.vx = Math.cos(ang) * 1.5;
+        p.vy = 2 + Math.random() * 2;
+        p.vz = Math.sin(ang) * 1.5;
+
+        smokeCount++;
+        if (smokeCount >= 4) break;
+      }
     }
 
     // 3 debris chunks
-    const woodMat = new THREE.MeshBasicMaterial({ color: '#3a1000' });
-    for (let i = 0; i < 3; i++) {
-      const p = new THREE.Mesh(boxGeo, woodMat);
-      p.position.set(x, y + 1, z);
-      this.extScene.add(p);
-      const ang = (i / 3) * Math.PI * 2;
-      this.activeParticles.push({
-        mesh: p,
-        vx: Math.cos(ang) * 8,
-        vy: 6 + Math.random() * 6,
-        vz: Math.sin(ang) * 8,
-        life: 0.8, maxLife: 0.8,
-        scale: 0.4, color: new THREE.Color('#3a1000'),
-        isDebris: true,
-        rotV: new THREE.Vector3(8, 8, 8)
-      });
+    let debrisCount = 0;
+    for (const p of this.particlePool) {
+      if (p.type === 'debris' && !p.active) {
+        p.active = true;
+        p.life = 0.8;
+        p.maxLife = 0.8;
+        p.scale = 0.4;
+        p.mesh.position.set(x, y + 1, z);
+        p.mesh.scale.set(0.4, 0.4, 0.4);
+        p.mesh.visible = true;
+
+        const ang = (debrisCount / 3) * Math.PI * 2;
+        p.vx = Math.cos(ang) * 8;
+        p.vy = 6 + Math.random() * 6;
+        p.vz = Math.sin(ang) * 8;
+
+        debrisCount++;
+        if (debrisCount >= 3) break;
+      }
     }
   }
 
@@ -2087,13 +2243,13 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       this.extCamera.position.y += (Math.random() - 0.5) * shakeAmt;
     }
 
-    for (let i = this.activeParticles.length - 1; i >= 0; i--) {
-      const p = this.activeParticles[i];
+    for (const p of this.particlePool) {
+      if (!p.active) continue;
       p.life -= dt;
 
       if (p.life <= 0) {
-        this.extScene.remove(p.mesh);
-        this.activeParticles.splice(i, 1);
+        p.active = false;
+        p.mesh.visible = false;
         continue;
       }
 
@@ -2101,30 +2257,25 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       p.mesh.position.y += p.vy * dt;
       p.mesh.position.z += p.vz * dt;
 
-      if (p.isDebris) {
+      if (p.type === 'debris') {
         p.vy -= 18.0 * dt; // Gravity on debris chunks
         if (p.rotV) {
           p.mesh.rotation.x += p.rotV.x * dt;
           p.mesh.rotation.y += p.rotV.y * dt;
         }
         if (p.mesh.position.y < 0.2) p.mesh.position.y = 0.2;
-      } else if (p.isSmoke) {
+      } else if (p.type === 'smoke') {
         // Smoke expands and rises while fading out
         const progress = 1 - p.life / p.maxLife;
         const currentScale = p.scale * (1 + progress * 2.5);
         p.mesh.scale.set(currentScale, currentScale, currentScale);
-        (p.mesh.material as THREE.MeshBasicMaterial).opacity = Math.max(0, 0.75 * (1 - progress));
+        (p.mesh.material as THREE.MeshBasicMaterial).opacity = Math.max(0, 0.55 * (1 - progress));
       } else {
         // Fire particles shrink and fade
         const progress = 1 - p.life / p.maxLife;
-        // Custom per-particle animation callback (fireball, shockwave, flash)
-        if ((p as any)._onTick) {
-          (p as any)._onTick(progress);
-        } else {
-          const currentScale = p.scale * Math.max(0.01, 1 - progress);
-          p.mesh.scale.set(currentScale, currentScale, currentScale);
-          (p.mesh.material as THREE.MeshBasicMaterial).opacity = Math.max(0, 1 - progress);
-        }
+        const currentScale = p.scale * Math.max(0.01, 1 - progress);
+        p.mesh.scale.set(currentScale, currentScale, currentScale);
+        (p.mesh.material as THREE.MeshBasicMaterial).opacity = Math.max(0, 1 - progress);
       }
     }
   }
