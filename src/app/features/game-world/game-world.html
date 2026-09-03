@@ -39,9 +39,10 @@
   </ng-container>
 
   <!-- ═══════════ MOBILE TOUCH CONTROLS (Virtual Analog Joystick + Laser) ═══════════ -->
-  <div class="mobile-touch-controls">
+  <div class="mobile-touch-controls" (pointerdown)="$event.stopPropagation()">
     <!-- Virtual Analog Joystick -->
     <div class="virtual-joystick"
+         (pointerdown)="$event.stopPropagation()"
          (touchstart)="onJoystickStart($event)"
          (touchmove)="onJoystickMove($event)"
          (touchend)="onJoystickEnd($event)"
@@ -53,6 +54,9 @@
 
     <!-- Laser Action Button (Rapid-Fire on Long-Press / Hold) -->
     <button class="btn-laser-mobile" *ngIf="!isInsideBuilding"
+            (pointerdown)="$event.stopPropagation()"
+            (pointermove)="$event.stopPropagation()"
+            (pointerup)="$event.stopPropagation()"
             (touchstart)="startContinuousLaser($event)"
             (touchend)="stopContinuousLaser($event)"
             (touchcancel)="stopContinuousLaser($event)"

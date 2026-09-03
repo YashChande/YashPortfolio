@@ -72,6 +72,7 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
   private mouseDragging = false;
   private prevMouseX = 0;
   private prevMouseY = 0;
+  private cameraDragPointerId: number | null = null;
 
   // ── Exterior Player Physics State (Starts FURTHER BACK on Southern Highway at z=140)
   player = {
@@ -288,9 +289,28 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
   @HostListener('window:pointerdown', ['$event'])
   onPointerDown(e: PointerEvent) {
     if (!this.gameWorldService.isInteractiveMode()) return;
-    this.mouseDragging = true;
-    this.prevMouseX = e.clientX;
-    this.prevMouseY = e.clientY;
+    if (this.isShootingLaser) return;
+
+    const target = e.target as HTMLElement;
+    // Do not initiate camera drag if pointer down was on any button, joystick, or HUD control
+    if (target && (
+      target.closest('button') ||
+      target.closest('.mobile-touch-controls') ||
+      target.closest('.virtual-joystick') ||
+      target.closest('.hud-top-bar') ||
+      target.closest('.glass-panel') ||
+      target.closest('.interaction-prompt') ||
+      target.closest('.picture-frame-hover-card')
+    )) {
+      return;
+    }
+
+    if (this.cameraDragPointerId === null) {
+      this.cameraDragPointerId = e.pointerId;
+      this.mouseDragging = true;
+      this.prevMouseX = e.clientX;
+      this.prevMouseY = e.clientY;
+    }
   }
 
   @HostListener('window:pointermove', ['$event'])
@@ -300,7 +320,9 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     this.mouseVec.x = (e.clientX / window.innerWidth) * 2 - 1;
     this.mouseVec.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
-    if (!this.mouseDragging) return;
+    // Never move camera if shooting laser or pointer is not the active drag pointer
+    if (this.isShootingLaser) return;
+    if (!this.mouseDragging || e.pointerId !== this.cameraDragPointerId) return;
 
     const dx = e.clientX - this.prevMouseX;
     const dy = e.clientY - this.prevMouseY;
@@ -312,12 +334,29 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
       this.intCameraOrbit.pitch = Math.max(0.05, Math.min(0.8, this.intCameraOrbit.pitch + dy * 0.005));
     } else {
       this.cameraYaw += dx * 0.007;
-      this.cameraHeight = Math.max(3.0, Math.min(14.0, this.cameraHeight - dy * 0.08));
+      const isMobile = window.innerWidth < 768;
+      // On mobile, lock camera height to prevent accidental vertical zooming/jerking
+      if (!isMobile) {
+        this.cameraHeight = Math.max(3.0, Math.min(14.0, this.cameraHeight - dy * 0.08));
+      }
     }
   }
 
-  @HostListener('window:pointerup')
-  onPointerUp() { this.mouseDragging = false; }
+  @HostListener('window:pointerup', ['$event'])
+  onPointerUp(e: PointerEvent) {
+    if (e.pointerId === this.cameraDragPointerId) {
+      this.mouseDragging = false;
+      this.cameraDragPointerId = null;
+    }
+  }
+
+  @HostListener('window:pointercancel', ['$event'])
+  onPointerCancel(e: PointerEvent) {
+    if (e.pointerId === this.cameraDragPointerId) {
+      this.mouseDragging = false;
+      this.cameraDragPointerId = null;
+    }
+  }
 
   @HostListener('window:resize')
   onResize() {
@@ -2107,7 +2146,7 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     if (this.playerGroup) this.playerGroup.rotation.y = angleToTarget;
 
     this.isShootingLaser = true;
-    this.cameraShakeTimer = 0.4;
+    this.cameraShakeTimer = 0; // Disabled to keep camera completely stable while shooting lasers
 
     // Eye Origin Positions in World Space
     const eyeY = 3.3;
@@ -2273,12 +2312,8 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
 
   // 🔄 PARTICLE & CAMERA SHAKE ANIMATION UPDATE LOOP
   private updateParticles(dt: number): void {
-    // Camera shake effect
     if (this.cameraShakeTimer > 0) {
       this.cameraShakeTimer -= dt;
-      const shakeAmt = this.cameraShakeTimer * 0.35;
-      this.extCamera.position.x += (Math.random() - 0.5) * shakeAmt;
-      this.extCamera.position.y += (Math.random() - 0.5) * shakeAmt;
     }
 
     for (const p of this.particlePool) {

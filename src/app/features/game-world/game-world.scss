@@ -13,6 +13,10 @@
   transition: opacity 0.45s ease, transform 0.45s ease;
   transform: scale(0.98);
   cursor: default;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 
   &.active {
     opacity: 1;
@@ -26,6 +30,10 @@
   height: 100%;
   display: block;
   cursor: default;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* ── HUD Top Bar ─────────────────────────────── */
