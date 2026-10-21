@@ -31,52 +31,6 @@
   letter-spacing: 1px;
 }
 
-.education-list {
-  margin-top: 3.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.edu-item {
-  padding: 2rem;
-  position: relative;
-  opacity: 1 !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  margin-bottom: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-
-  @media (max-width: 768px) {
-    padding: 1.5rem;
-  }
-
-  .edu-period {
-    color: $accent-cyan;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-
-  .edu-degree {
-    font-size: 1.2rem;
-    margin-bottom: 0.3rem;
-    color: $text-primary;
-  }
-
-  .edu-school {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .edu-details {
-    font-size: 0.9rem;
-    color: $text-secondary;
-    line-height: 1.6;
-  }
-}
-
 /* Timeline styles for Academic Foundation */
 .timeline {
   position: relative;
@@ -316,8 +270,8 @@
 
   .qual-score {
     font-size: 1rem;
-    font-weight: 700;
-    color: $accent-cyan;
+    font-weight: 500;
+    color: $text-secondary;
   }
 
   .qual-max {

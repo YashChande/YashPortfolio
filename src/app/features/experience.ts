@@ -2,6 +2,17 @@ import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnimationService } from '../core/services/animation.service';
 
+export interface ExperienceItem {
+  title: string;
+  company: string;
+  period: string;
+  description: string;
+  highlights: string[];
+  logo: string;
+  website?: string;
+  badge?: string;
+}
+
 @Component({
   selector: 'app-experience',
   standalone: true,
@@ -10,16 +21,15 @@ import { AnimationService } from '../core/services/animation.service';
   styleUrl: './experience.scss'
 })
 export class ExperienceComponent implements AfterViewInit {
-  experiences = [
+  experiences: ExperienceItem[] = [
     {
       title: 'Founder',
       company: 'Docuvia',
-      period: 'July 2025 - Present',
-      description: 'Developing Docuvia end-to-end - an AI-powered document intelligence and risk analytics platform. Implementing the full-stack system using Angular, C#, and Ollama Llama 3 Large Language Model (LLM), enabling automated extraction of actionable insights and visual analytics from unstructured documents, currently live and in active development.',
+      period: 'July 2025 - Sep 2026',
+      description: 'Developed Docuvia end-to-end - an AI-powered document intelligence and risk analytics platform. Implementing the full-stack system using Angular, C#, and Ollama Llama 3 Large Language Model (LLM), enabling automated extraction of actionable insights and visual analytics from unstructured documents.',
       highlights: ['Angular', 'Llama 3', 'LLM', 'C#', 'TypeScript', 'SQLite', 'HTML5', 'CSS', 'PrimeNG'],
       logo: 'assets/docuvia.jpg',
-      website: 'https://docuvia-frontend.onrender.com',
-      badge: 'In Development'
+      website: 'https://docuvia-frontend.onrender.com'
     },
     {
       title: 'Software Developer',
