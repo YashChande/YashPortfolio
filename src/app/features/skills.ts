@@ -43,7 +43,7 @@ export class SkillsComponent implements AfterViewInit {
       name: 'Domain Experience',
       skills: [
         { name: 'Cybersecurity and IT', icon: 'assets/arcon_risk_control_logo.jpg' },
-        { name: 'Equity Trading', icon: 'https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/zerodha-kite-app-icon-hd.png' },
+        { name: 'Equity Trading', icon: 'assets/zerodha_kite_logo.svg' },
         { name: 'Video Editing', icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Adobe_Premiere_Pro_CC_icon.svg/3840px-Adobe_Premiere_Pro_CC_icon.svg.png' }
       ]
     }

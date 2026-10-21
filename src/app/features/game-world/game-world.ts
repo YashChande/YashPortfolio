@@ -128,21 +128,6 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     isDestroyed: boolean;
   }[] = [];
 
-  private activeParticles: {
-    mesh: THREE.Mesh;
-    vx: number;
-    vy: number;
-    vz: number;
-    life: number;
-    maxLife: number;
-    scale: number;
-    color: THREE.Color;
-    isSmoke?: boolean;
-    isDebris?: boolean;
-    rotV?: THREE.Vector3;
-  }[] = [];
-
-  private cameraShakeTimer = 0;
   private isShootingLaser = false;
 
   // Buildings & Interior State
@@ -1596,7 +1581,7 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
             subtitle: 'Professional Career',
             description: 'Full-stack software engineering and startup product development.',
             details: [
-              { text: 'Founder @ Docuvia (July 2025 - Present) - AI document intelligence platform (Angular, C#, Ollama Llama 3 LLM)', logo: 'assets/docuvia.jpg' } as DetailItem,
+              { text: 'Founder @ Docuvia (July 2025 - Sep 2026) - AI document intelligence platform (Angular, C#, Ollama Llama 3 LLM)', logo: 'assets/docuvia.jpg' } as DetailItem,
               { text: 'Software Developer @ ARCON (June 2023 - July 2025) - Security Compliance Management product, .NET APIs & Angular UI', logo: 'assets/arcon_risk_control_logo.jpg' } as DetailItem,
               { text: 'Web Dev Intern @ Lets Grow More (Sep 2022 - Oct 2022) - React web applications', logo: 'assets/letsgrowmore_logo.jpg' } as DetailItem
             ],
@@ -1701,7 +1686,7 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
             description: 'Specialized experience across cybersecurity, financial trading, and media.',
             details: [
               { text: 'Cybersecurity and IT - ARCON Security Compliance Management', logo: 'assets/arcon_risk_control_logo.jpg' } as DetailItem,
-              { text: 'Equity Trading - Zerodha Kite', logo: 'https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/zerodha-kite-app-icon-hd.png' } as DetailItem,
+              { text: 'Equity Trading - Zerodha Kite', logo: 'assets/zerodha_kite_logo.svg' } as DetailItem,
               { text: 'Video Editing - Adobe Premiere Pro', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Adobe_Premiere_Pro_CC_icon.svg/3840px-Adobe_Premiere_Pro_CC_icon.svg.png' } as DetailItem
             ],
             tags: ['Cybersecurity', 'Equity Trading', 'Video Editing'],
@@ -2146,7 +2131,6 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     if (this.playerGroup) this.playerGroup.rotation.y = angleToTarget;
 
     this.isShootingLaser = true;
-    this.cameraShakeTimer = 0; // Disabled to keep camera completely stable while shooting lasers
 
     // Eye Origin Positions in World Space
     const eyeY = 3.3;
@@ -2310,12 +2294,8 @@ export class GameWorldComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // 🔄 PARTICLE & CAMERA SHAKE ANIMATION UPDATE LOOP
+  // 🔄 PARTICLE ANIMATION UPDATE LOOP
   private updateParticles(dt: number): void {
-    if (this.cameraShakeTimer > 0) {
-      this.cameraShakeTimer -= dt;
-    }
-
     for (const p of this.particlePool) {
       if (!p.active) continue;
       p.life -= dt;
