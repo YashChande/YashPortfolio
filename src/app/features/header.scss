@@ -237,22 +237,6 @@ header {
   }
 }
 
-.btn-nav {
-  padding: 0.6rem 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
-  transition: $transition-smooth;
-  
-  &:hover {
-    background: white;
-    color: $bg-color;
-  }
-}
-
 // Mobile Toggle styling
 .mobile-menu-toggle {
   display: none;
